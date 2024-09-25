@@ -1,0 +1,319 @@
+
+<div class="header-container">
+    <p-button icon="pi pi-file-pdf" label="Generar PDF" [text]="true" (click)="generatePDF()" styleClass="ml-auto"></p-button>
+  </div>
+<div class="container" #pdfContent>
+    <div class="header">
+        <div>
+            <img src="../../../assets/images/logo-sg-motos.png">
+        </div>
+        <div class="title text-center"><h3>SG-MOTOS</h3></div>
+        <div>
+            <img src="../../../assets/images/logo-sg-motos.png">
+        </div>
+    </div>
+    <div class="text-right">
+        <h6>General Deheza, {{cardData?.createdAt}}</h6>
+    </div>
+    
+   
+    <h5 class="section-title">PERSONA FÍSICA</h5>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="apellidoNombre">Apellido y Nombre:</label>
+                <span id="apellidoNombre"> {{Persona?.apellido}}, {{Persona?.nombre}}</span>
+            </div>
+            <div class="form-group">
+                <label for="domicilio">Domicilio:</label>
+                <span id="domicilio"> {{Persona?.direccion}}</span>
+            </div>
+            <div class="form-group">
+                <label for="localidad">Localidad:</label>
+                <span id="localidad"> {{Persona?.Localidad}}</span>
+            </div>
+            <div class="form-group">
+                <label for="cuit">C.U.I.T.:</label>
+                <span id="cuit"> {{Persona?.cuit}}</span>
+            </div>
+            <div class="form-group">
+                <label for="dni">DNI/LE/LC/CI:</label>
+                <span id="dni"> {{Persona?.dni}}</span>
+            </div>
+            <div class="form-group">
+                <label for="telParticular">Tel. particular:</label>
+                <span id="telParticular"> {{Persona?.telefono}}</span>
+            </div>
+            <div class="form-group">
+                <label for="telComercial">Tel. comercial:</label>
+                <span id="telComercial"> {{datosAdicionales?.telComercial}}</span>
+            </div>
+            <div class="form-group">
+                <label for="estadoCivil">Estado civil:</label>
+                <span id="estadoCivil"> {{datosAdicionales?.estadoCivil}}</span>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <span id="email"> {{Persona?.mail}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="empresa">Empresa donde trabaja:</label>
+                <span id="empresa"> {{datosAdicionales?.empActual}}</span>
+            </div>
+            <div class="form-group">
+                <label for="domicilioEmpresa">Domicilio y Tel.:</label>
+                <span id="domicilioEmpresa"> {{datosAdicionales?.telEmp}}</span>
+            </div>
+            <div class="form-group">
+                <label for="profesion">Profesión:</label>
+                <span id="profesion"> {{datosAdicionales?.profesion}}</span>
+            </div>
+            <div class="form-group">
+                <label for="fechaIngreso">Fecha de ingreso:</label>
+                <span id="fechaIngreso"> {{datosAdicionales?.fechaIngreso | date}} </span>
+            </div>
+            <div class="form-group">
+                <label for="ingresos">Ingresos mensuales:</label>
+                <span id="ingresos">{{datosAdicionales?.ingresosMensuales | currency}}</span>
+            </div>
+            <div class="form-group">
+                <label for="conyuge">Nombre del cónyuge:</label>
+                <span id="conyuge"> {{datosAdicionales?.nombreConyugue}}</span>
+            </div>
+            <div class="form-group">
+                <label for="trabajaConyuge">¿Trabaja?:</label>
+                <span id="trabajaConyuge"> {{datosAdicionales?.trabaja}}</span>
+            </div>
+            <div class="form-group">
+                <label for="dondeConyuge">¿Dónde Trabaja?:</label>
+                <span id="dondeConyuge"> {{datosAdicionales?.dondeTrabaja || 'No Trabaja'}}</span>
+            </div>
+            <div class="form-group">
+                <label for="dniConyuge">DNI cónyuge:</label>
+                <span id="dniConyuge"> {{datosAdicionales?.dniConyugue}}</span>
+            </div>
+        </div>
+    </div>
+        
+    
+    
+    <h5 class="section-title">PERSONA JURÍDICA</h5>
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label for="razonSocial">Razón social:</label>
+                <span id="razonSocial"> {{datosAdicionales?.razonSocial}}</span>
+            </div>
+            <div class="form-group">
+                <label for="ramoActividad">Ramo de actividad:</label>
+                <span id="ramoActividad"> {{datosAdicionales?.ramoDeActividad}}</span>
+            </div>
+            <div class="form-group">
+                <label for="cuitJuridica">CUIT:</label>
+                <span id="cuitJuridica"> {{datosAdicionales?.cuitJuridico}}</span>
+            </div>
+            <div class="form-group">
+                <label for="responsabilidadIva">Responsabilidad ante IVA:</label>
+                <span id="responsabilidadIva"> {{datosAdicionales?.ivaJuridico}}</span>
+            </div>
+           
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label for="ventasMensuales">Ventas mensuales:</label>
+                <span id="ventasMensuales"> {{datosAdicionales?.ventasMensuales}}</span>
+            </div>
+            <div class="form-group">
+                <label for="direccion">Dirección:</label>
+                <span id="direccion"> {{datosAdicionales?.domicilioJuridico}}</span>
+            </div>
+            <div class="form-group">
+                <label for="telefono">Tel.:</label>
+                <span id="telefono"> {{datosAdicionales?.telefonoJuridico}}</span>
+            </div>
+            <div class="form-group">
+                <label for="telefax">Telefax:</label>
+                <span id="telefax"> {{datosAdicionales?.telefax}}</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <h5 class="section-title">GARANTE</h5>
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label>Apellido y Nombre:</label>
+                <p class="form-control-static"> {{datosAdicionales?.nombreGarante}}</p>
+            </div>
+            <div class="form-group">
+                <label>Domicilio:</label>
+                <p class="form-control-static"> {{datosAdicionales?.domicilioGarante}}</p>
+            </div>
+            <div class="form-group">
+                <label>DNI/LE/LC/CI:</label>
+                <p class="form-control-static"> {{datosAdicionales?.cuitGarante}}</p>
+            </div>
+            <div class="form-group">
+                <label>Tel.:</label>
+                <p class="form-control-static">{{datosAdicionales?.telGarante}} </p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Lugar donde trabaja:</label>
+                <p class="form-control-static"> {{datosAdicionales?.direccionEmpGarante}}</p>
+            </div>
+            <div class="form-group">
+                <label>Edad:</label>
+                <p class="form-control-static"> {{datosAdicionales?.edadGarante}}</p>
+            </div>
+            <div class="form-group">
+                <label>Casa Propia o Alquilada:</label>
+                <p class="form-control-static"> {{datosAdicionales?.casaPropiaAlquilada}}</p>
+            </div>
+            <div class="form-group">
+                <label>Estado civil:</label>
+                <p class="form-control-static">  {{datosAdicionales?.estadoCivilGarante}}</p>
+            </div>
+        </div>
+       
+       
+    </div>
+
+    <h5 class="section-title">BIEN ADQUIRIDO</h5>
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label>Marca: </label>
+                <p class="form-control-static">{{cardData?.Moto.marca}}</p>
+            </div>
+            <div class="form-group">
+                <label>Modelo: </label>
+                <p class="form-control-static">{{cardData?.Moto.modelo}}</p>
+            </div>
+            <div class="form-group">
+                <label>Año: </label>
+                <p class="form-control-static">{{cardData?.Moto.year}}</p>
+            </div>
+            <div class="form-group">
+                <label>Número de motor: </label>
+                <p class="form-control-static">{{cardData?.Moto.num_motor}}</p>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="form-group">
+                <label>Número de cuadro:</label>
+                <p class="form-control-static">{{cardData?.Moto.num_cuadro}}</p>
+            </div>
+            <div class="form-group">
+                <label>Color:</label>
+                <p class="form-control-static">{{cardData?.Moto.color || 'No Especificado'}}</p>
+            </div>
+            <div class="form-group">
+                <label>Cilindrada:</label>
+                <p class="form-control-static">{{cardData?.Moto.cilindrada}}</p>
+            </div>
+            <div class="form-group">
+                <label>Certificado de fábrica Nº:</label>
+                <p class="form-control-static">{{cardData?.Moto.cert_num_fabrica}}</p>
+            </div>
+        </div>
+       
+        
+    </div>
+
+    <h5 class="section-title">OPERACIÓN</h5>
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label>Precio:</label>
+            <p class="form-control-static"> {{operacion?.precioOperacion | currency}}</p>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Seña:</label>
+            <p class="form-control-static"> {{operacion?.seniaOperacion  | currency}}</p>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Entrega inicial:</label>
+            <p class="form-control-static"> {{operacion?.entregaOperacion  | currency}}</p>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Otras entregas:</label>
+            <p class="form-control-static"> {{operacion?.otrasEntOperacion  | currency}}</p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Financiado/a en {{operacion?.cuotas}} cuotas de $</label>
+        <p class="form-control-static"> {{operacion?.valorCuota  | currency}}</p>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label>Fecha de la 1º cuota</label>
+            <p class="form-control-static"> {{operacion?.diaInicioCuota}} de {{operacion?.mesInicioCuota}} del año {{operacion?.anioInicioCuota}}</p>
+        </div>
+        <div class="form-group">
+            <label>Fecha de la ultima cuota</label>
+            <p class="form-control-static"> {{operacion?.diaInicioCuota}} de {{operacion?.mesInicioCuota}} del año {{operacion?.anioFinalCuota}}</p>
+        </div>
+        <div class="form-group">
+            <label>Observaciones</label>
+            <p class="form-control-static"> {{operacion?.observacionOperacion}}</p>
+        </div>
+    </div>
+
+    <h5 class="section-title">GESTORÍA</h5>
+    <div class="row">
+        <div class="form-group col-md-4">
+            <label>Gastos Pap.</label>
+            <p class="form-control-static"> {{operacion?.gastosPap | currency}} </p>
+        </div>
+        <div class="form-group col-md-4">
+            <label>Prenda</label>
+            <p class="form-control-static"> {{operacion?.prenda | currency}} </p>
+        </div>
+        <div class="form-group col-md-4">
+            <label>Inscripción</label>
+            <p class="form-control-static"> {{operacion?.inscripcion | currency}} </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group checkbox-group">
+          <input 
+            type="checkbox" 
+            id="debe" 
+            class="mr-2" 
+            [disabled]="true"
+            [(ngModel)]="debeChecked">
+          <label for="debe">Debe</label>
+        </div>
+        <div class="form-group checkbox-group">
+          <input 
+            type="checkbox" 
+            id="pago" 
+            class="mr-2" 
+            [disabled]="true"
+            [(ngModel)]="pagoChecked">
+          <label for="pago">Pagó</label>
+        </div>
+      </div>
+
+    <p>Con fecha {{datosAdicionales?.fechaRealizacion | date}} firme SG MOTOS la documentación correspondiente al bien antes mencionado, de conformidad.</p>
+
+    <div class="form-group">
+        <label>Concepto</label>
+        <p class="form-control-static">Venta de vehículo</p>
+        <div class="col">
+            <label>FIRMA:</label>
+            <p class="form-control-static"></p>
+            <br>
+            <br>
+        </div>
+       
+        
+
+    </div>

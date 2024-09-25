@@ -1,0 +1,21 @@
+body {
+    width: 21cm;
+    min-height: 29.7cm;
+    padding: 1cm;
+    margin: auto;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-title {
+  color: black !important;
+}
+.bordered {
+  border: 1px solid black;
+}
+.no-border {
+  border: none;
+}
+.table td, .table th {
+  border: 1px solid black;
+}

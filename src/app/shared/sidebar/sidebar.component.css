@@ -1,0 +1,17 @@
+li, a {
+    cursor: pointer;
+  }
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .logo-icon {
+    max-width: 100%;
+    max-height: 6em; 
+    width: auto;
+    height: auto;
+  }

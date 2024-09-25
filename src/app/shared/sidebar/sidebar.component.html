@@ -1,0 +1,283 @@
+<!--start sidebar -->
+<aside class="sidebar-wrapper" data-simplebar="true">
+  <div class="sidebar-header">
+    <div>
+      <img src="../../../assets/images/logo-sg-motos.ico" class="logo-icon" alt="logo icon">
+    </div>
+    <div>
+      <h4 class="logo-text">SG-Motos</h4>
+    </div>
+  </div>
+    <!--navigation-->
+    <ul class="metismenu" id="menu">
+      <li>
+        <a (click)="navigateTo('admin/inicio')">
+          <div class="parent-icon">
+            <ion-icon name="home-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Inicio</div>
+        </a>
+      </li>
+      <li class="menu-label">Manejo General</li>
+      <li>
+        
+        <a href="javascript:;" class="has-arrow">
+          <div class="parent-icon">
+            <ion-icon name="file-tray-stacked-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Stock</div>
+        </a>
+        <ul>
+          <li><a (click)="navigateTo('admin/stock')">
+            <ion-icon name="ellipse-outline"></ion-icon> Listado stock
+          </a>
+          </li>
+
+          <li><a (click)="navigateTo('admin/servicios')">
+            <ion-icon name="ellipse-outline"></ion-icon> Servicios
+          </a>
+          </li>
+
+          <li><a (click)="navigateTo('admin/insumos')">
+            <ion-icon name="ellipse-outline"></ion-icon> Insumos
+          </a>
+          </li>
+
+          <li><a (click)="navigateTo('admin/motos-usadas')">
+              <ion-icon name="ellipse-outline"></ion-icon> Motos Usadas
+            </a>
+          </li>
+          <li><a (click)="navigateTo('admin/motos-nuevas')">
+              <ion-icon name="ellipse-outline"></ion-icon> Motos Nuevas
+            </a>
+          </li>
+          
+          
+        </ul>
+      </li>
+
+
+      <li>
+        <a (click)="navigateTo('admin/pedidos-stock')">
+          <div class="parent-icon">
+            <ion-icon name="albums-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Pedidos de Stock</div>
+        </a>
+      </li>
+
+      <li *ngIf="isAdmin">
+        <a (click)="navigateTo('admin/tareas')">
+          <div class="parent-icon">
+            <ion-icon name="receipt-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Tareas Pendientes</div>
+        </a>
+      </li>
+
+     
+
+
+      <li class="menu-label">Gestionar Ventas</li>
+
+
+      <li>
+        <a href="javascript:;" class="has-arrow">
+          <div class="parent-icon">
+            <ion-icon name="briefcase-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Ventas</div>
+        </a>
+        <ul>
+          <li> <a (click)="navigateTo('admin/ventas/accesorios')">
+              <ion-icon name="ellipse-outline"></ion-icon> Accesorios
+            </a>
+          </li>
+          <li> <a (click)="navigateTo('admin/ventas/repuestos')">
+            <ion-icon name="ellipse-outline"></ion-icon> Repuestos
+          </a>
+        </li>
+          <li> <a (click)="navigateTo('admin/venta-motos')">
+              <ion-icon name="ellipse-outline"></ion-icon> Motos
+            </a>
+          </li>
+
+        </ul>
+      </li>
+
+      <li>
+        <a (click)="navigateTo('admin/service')">
+          <div class="parent-icon">
+            <ion-icon name="build-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Service</div>
+        </a>
+      </li>
+      
+      
+
+     
+
+      
+      <li>
+        <a (click)="navigateTo('admin/listado-precios')">
+          <div class="parent-icon">
+            <ion-icon name="cash-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Listado de Precios</div>
+          
+          
+        </a>
+      </li>
+      
+      <li>
+        <a (click)="navigateTo('admin/historial-clientes')">
+          <div class="parent-icon">
+            <ion-icon name="list-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Historial de Clientes</div>
+        </a>
+      </li>
+      
+
+      
+
+
+      <li class="menu-label">Personas y Motos</li>
+      <li>
+        <a class="has-arrow" href="javascript:;">
+          <div class="parent-icon">
+            <ion-icon name="accessibility-outline"></ion-icon>
+          </div>
+          <div class="menu-title" >Personas</div>
+        </a>
+        <ul>
+          
+          <li *ngIf="isAdmin"> <a (click)="navigateTo('admin/personas')">
+              <ion-icon name="ellipse-outline"></ion-icon> Listado de Personas
+            </a>
+          </li>
+
+          <li *ngIf="isAdmin"> <a (click)="navigateTo('admin/proveedor')">
+              <ion-icon name="ellipse-outline"></ion-icon> Proveedores
+            </a>
+          </li>
+
+          <li *ngIf="isAdmin"> <a (click)="navigateTo('admin/empleados')">
+            <ion-icon name="ellipse-outline"></ion-icon> Empleados
+          </a>
+        </li>
+
+          <li> <a (click)="navigateTo('admin/clientes')">
+            <ion-icon name="ellipse-outline"></ion-icon> Clientes
+          </a>
+          </li>
+
+          <li *ngIf="isAdmin"> <a (click)="navigateTo('admin/usuarios')">
+            <ion-icon name="ellipse-outline"></ion-icon> Usuarios
+          </a>
+          </li>
+          
+        </ul>
+      </li>
+
+      <li>
+        <a class="has-arrow" href="javascript:;">
+          <div class="parent-icon">
+            <ion-icon name="bicycle-outline"></ion-icon>
+          </div>
+          <div class="menu-title" >Motos</div>
+        </a>
+        <ul>
+          
+          <li> <a (click)="navigateTo('admin/motos')">
+              <ion-icon name="ellipse-outline"></ion-icon> Listado de Motos
+            </a>
+          </li>
+
+          <li> <a (click)="navigateTo('admin/motos-nuevas')">
+              <ion-icon name="ellipse-outline"></ion-icon> Motos Nuevas
+            </a>
+          </li>
+
+          <li> <a (click)="navigateTo('admin/motos-usadas')">
+            <ion-icon name="ellipse-outline"></ion-icon> Motos Usadas
+          </a>
+        </li>
+
+          <li> <a (click)="navigateTo('admin/motos-consignacion')">
+            <ion-icon name="ellipse-outline"></ion-icon> Motos En Consignacion
+          </a>
+          </li>
+
+        </ul>
+      </li>
+
+      
+     
+
+      <li class="menu-label" *ngIf="isAdmin" >Padrones</li>
+      <li *ngIf="isAdmin">
+        <a class="has-arrow" href="javascript:;">
+          <div class="parent-icon">
+            <ion-icon name="happy-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Para Personas</div>
+        </a>
+        <ul>
+          <li> <a (click)="navigateTo('admin/tipo-personas')">
+              <ion-icon name="ellipse-outline"></ion-icon>Tipo de Personas
+            </a>
+          </li>
+          <li> <a (click)="navigateTo('admin/roles')">
+              <ion-icon name="ellipse-outline"></ion-icon> Roles
+            </a>
+          </li>
+          <li> <a (click)="navigateTo('admin/localidades')">
+            <ion-icon name="ellipse-outline"></ion-icon> Localidades
+          </a>
+          </li>
+        </ul>
+      </li>
+
+      <li *ngIf="isAdmin">
+        <a class="has-arrow" href="javascript:;">
+          <div class="parent-icon">
+            <ion-icon name="hammer-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Para Motos</div>
+        </a>
+        <ul>
+          <li> <a (click)="navigateTo('admin/marcas')">
+              <ion-icon name="ellipse-outline"></ion-icon>Marcas
+            </a>
+          </li>
+          <li> <a (click)="navigateTo('admin/tipo-motos')">
+              <ion-icon name="ellipse-outline"></ion-icon> Tipo de Motos
+            </a>
+          </li>
+          
+        </ul>
+      </li>
+
+      <li *ngIf="isAdmin">
+        <a class="has-arrow" href="javascript:;">
+          <div class="parent-icon">
+            <ion-icon name="albums-outline"></ion-icon>
+          </div>
+          <div class="menu-title">Para Stock</div>
+        </a>
+        <ul>
+          <li> <a (click)="navigateTo('admin/tipo-articulo')">
+              <ion-icon name="ellipse-outline"></ion-icon>Tipo de Articulos
+            </a>
+          </li>
+          <li> <a (click)="navigateTo('admin/tipo-movimientos')">
+            <ion-icon name="ellipse-outline"></ion-icon>Tipo de Movimientos
+          </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <!--end navigation-->
+  </aside>

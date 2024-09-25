@@ -1,0 +1,125 @@
+<div class="header-container">
+    <h3>Stock</h3>
+    <p-button  *ngIf="isAdmin" icon="pi pi-plus" label="Agregar Stock" [text]="true" (click)="crearVisible = true" styleClass="ml-auto"></p-button>
+</div>
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    (editarClick)="editarItem($event)" 
+    (eliminarClick)="eliminarItem($event)"
+></app-tablang>
+
+<!-- <============================================ CREAR ==================================================> -->
+<p-dialog header="Crear Stock" [modal]="true" [(visible)]="crearVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="nombre_articulo" class="font-semibold w-6rem"><strong>Nombre del Articulo</strong></label>
+            <br>
+            <input id="nombre_articulo" class="flex-auto" formControlName="nombre_articulo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="descripcion" class="font-semibold w-6rem"><strong>Descripcion</strong></label>
+            <br>
+            <input id="descripcion"  class="flex-auto" formControlName="descripcion" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="costo" class="font-semibold w-6rem"><strong>Costo</strong></label>
+            <br>
+            <input id="costo"  class="flex-auto" formControlName="costo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="cantidad" class="font-semibold w-6rem"><strong>Cantidad</strong></label>
+            <br>
+            <input id="cantidad" type="number"  class="flex-auto" formControlName="cantidad" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="personaId" class="font-semibold w-6rem"><strong>Proveedor</strong></label>
+            <br>
+            <select id="personaId" class="flex-auto" formControlName="personaId">
+              <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">{{proveedor.nombre}} {{proveedor.apellido}}</option>
+              
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="tipoArticuloId" class="font-semibold w-6rem"><strong> Tipo de Articulo</strong></label>
+            <br>
+            <select id="tipoArticuloId" class="flex-auto" formControlName="tipoArticuloId">
+                <option *ngFor="let tipoArticulos of tipoArticulos" [value]="tipoArticulos.id">{{tipoArticulos.descripcion}} </option>
+            </select>
+        </div>
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="crearVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ EDITAR ==================================================> -->
+<p-dialog header="Editar Stock" [modal]="true" [(visible)]="editVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="nombre_articulo" class="font-semibold w-6rem"><strong>Nombre del Articulo</strong></label>
+            <br>
+            <input id="nombre_articulo" class="flex-auto" formControlName="nombre_articulo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="descripcion" class="font-semibold w-6rem"><strong>Descripcion</strong></label>
+            <br>
+            <input id="descripcion"  class="flex-auto" formControlName="descripcion" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="costo" class="font-semibold w-6rem"><strong>Costo</strong></label>
+            <br>
+            <input id="costo"  class="flex-auto" formControlName="costo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="cantidad" class="font-semibold w-6rem"><strong>Cantidad</strong></label>
+            <br>
+            <input id="cantidad" type="number"   class="flex-auto" formControlName="cantidad" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="personaId" class="font-semibold w-6rem"><strong>Proveedor</strong></label>
+            <br>
+            <select id="personaId" class="flex-auto" formControlName="personaId">
+              <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">{{proveedor.nombre}} {{proveedor.apellido}}</option>
+              
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="tipoArticuloId" class="font-semibold w-6rem"><strong> Tipo de Articulo</strong></label>
+            <br>
+            <select id="tipoArticuloId" class="flex-auto" formControlName="tipoArticuloId">
+                <option *ngFor="let tipoArticulos of tipoArticulos" [value]="tipoArticulos.id">{{tipoArticulos.descripcion}} </option>
+            </select>
+        </div>
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="crearVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ ELIMINAR ==================================================> -->
+<p-dialog header="Eliminar Stock" [modal]="true" [(visible)]="editEliminar" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Desea usted eliminar este objeto?</span>
+    <br>
+    <br>
+    <div class="flex justify-content-end gap-2">
+        <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="Eliminar()" />
+        <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editEliminar = false" />
+    </div>
+</p-dialog>

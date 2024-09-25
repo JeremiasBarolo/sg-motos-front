@@ -1,0 +1,6 @@
+<app-sidebar *ngIf="showSidebar"></app-sidebar>
+<app-header *ngIf="showHeader"></app-header>
+<p-toast></p-toast>
+<div class="page-content-wrapper" [ngClass]="{ 'full-width': !showSidebar && !showHeader }">
+  <router-outlet></router-outlet>
+</div>

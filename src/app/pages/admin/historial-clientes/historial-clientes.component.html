@@ -1,0 +1,66 @@
+<div class="header-container">
+    <h3>Historial de Clientes</h3>
+    
+
+    <div class="filter-container">
+      <p-calendar class="ml-2" [(ngModel)]="selectedDate" placeholder="Fecha" dateFormat="dd-mm-yy"></p-calendar>
+      <p-button [text]="true" icon="pi pi-search" (click)="filterByDate()"></p-button>
+    </div>
+
+    <p-dropdown 
+      [options]="clienteChoice" 
+      formControlName="selectedClient" 
+      optionLabel="cliente" 
+      placeholder="Seleccionar Cliente"
+      (onChange)="onClientChange($event)">
+    </p-dropdown>
+
+    
+</div>
+
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    [accionesVisible]="false"
+></app-tablang>
+
+
+
+
+  
+<p-dialog header="Historial del Cliente" [(visible)]="showTable" [modal]="true" [style]="{width: '75vw'}">
+    <app-tablang
+      [data]="movements"
+      [columns]="columns"
+      [accionesVisible]="false"
+    ></app-tablang>
+</p-dialog>
+
+<p-dialog header="Historial por Fecha ({{selectedDate | date}})" [(visible)]="fechasModal" [modal]="true" [style]="{width: '75vw'}" (onHide)="cerrarFecha()">
+  <p-table [value]="filteredProducts" [paginator]="true" [rows]="10" [responsive]="true" [styleClass]="'table shop-table'">
+    <ng-template pTemplate="header">
+      <tr>
+          
+        <th>Cliente</th>
+        <th>Tipo Movimiento</th>
+        <th>Subtotal</th>
+        <th>Recepcionista</th>
+        <th>Hora</th>
+
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-i="rowIndex">
+      <tr>
+          <td>{{ item.cliente}}</td>
+          <td>{{ item.TipoMovimiento}}</td>
+          <td>{{ item.subtotal | currency}}</td>
+          <td>{{ item.usuario}}</td>
+          <td>{{ item.hora }}</td>
+          
+          
+          
+        
+      </tr>
+    </ng-template>
+  </p-table>
+</p-dialog>

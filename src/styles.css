@@ -1,0 +1,18 @@
+@import 'assets/css/style.css';
+@import "primeng/resources/themes/viva-dark/theme.css";
+@import "primeng/resources/primeng.css";
+
+body, a{
+    text-decoration: none;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem; /* Espacio debajo del título y el botón */
+  }
+  
+  .ml-auto {
+    margin-left: auto;
+  }

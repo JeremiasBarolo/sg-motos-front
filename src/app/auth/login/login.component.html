@@ -1,0 +1,30 @@
+<p-toast></p-toast>
+<div class="d-flex align-items-center justify-content-center vh-100 bg-image">
+  <div class="col-xl-4 col-lg-5 col-md-7">
+    <div class="card radius-10">
+      <div class="card-body p-4 mr-10">
+        <div class="text-center">
+          <h4>Inicio de Sesion</h4>
+        </div>
+        
+        <form [formGroup]="loginForm" class="form-body row g-3">
+          <div class="col-12">
+            <label for="inputEmail" class="form-label">Usuario</label>
+            <input type="email" class="form-control" id="inputEmail" placeholder="Usuario..." formControlName="username" >
+          </div>
+          <div class="col-12">
+            <label for="inputPassword" class="form-label">Constraseña</label>
+            <input type="password" class="form-control" id="inputPassword" placeholder="Constraseña..." formControlName="password">
+          </div>
+          
+          <div class="col-12 col-lg-12">
+            <div class="d-grid">
+              <button type="button" class="btn btn-primary" (click)="login()">Iniciar Sesion</button>
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

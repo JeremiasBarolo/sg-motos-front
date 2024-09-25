@@ -1,0 +1,26 @@
+<div class="header-container">
+  <h3>Listado de Precios</h3>
+
+  <div class="controls">
+    <input
+      type="text"
+      placeholder="Buscar por nombre"
+      [(ngModel)]="searchText"
+      (input)="onSearchTextChange()"
+      class="search-input"
+    />
+
+    <p-dropdown 
+      [options]="tipoArticulosChoice" 
+      optionLabel="tipo" 
+      placeholder="Seleccionar Categoria"
+      (onChange)="onClientChange($event)">
+    </p-dropdown>
+  </div>
+</div>
+
+<app-tablang
+  [data]="filteredProducts"
+  [columns]="columns"
+  [accionesVisible]="false"
+></app-tablang>

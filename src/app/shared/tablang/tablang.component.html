@@ -1,0 +1,53 @@
+<p-table #dt [value]="data" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]" class="custom-datatable">
+  <ng-template pTemplate="header" class="p-overlaypanel-header p-component-header">
+    <tr>
+      <th *ngFor="let col of columns">{{ col.header }}</th>
+      <th *ngIf="acciones">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData>
+    <tr>
+      <td *ngFor="let col of columns" (click)="modalOpen(rowData)">
+        <ng-container *ngIf="col.field === 'estado'; else otherContent">
+          <span class="estado" [ngClass]="{
+            'badge-pendiente': rowData.estado === 'Pendiente',
+            'badge-proceso': rowData.estado === 'En Proceso',
+            'badge-completada': rowData.estado === 'Completada',
+            'badge-Finalizado': rowData.estado === 'Finalizado',
+            'badge-Preparacion': rowData.estado === 'En Preparacion'
+          }">{{ rowData.estado }}</span>
+        </ng-container>
+        
+        <ng-template #otherContent>
+          <ng-container *ngIf="col.field === 'subtotal' || col.field === 'precio' || col.field === 'costo' ; else defaultContent">
+            {{ rowData[col.field] | currency }}
+          </ng-container>
+          <ng-template #defaultContent>
+            {{ rowData[col.field] }}
+          </ng-template>
+        </ng-template>
+      </td>
+      <td *ngIf="acciones">
+        
+        <ng-container *ngIf="insumos">
+          <p-button icon="pi pi-plus" [text]="true" severity="info" (click)="asignarInsumos(rowData)" pTooltip="Asignar Insumos"></p-button>
+        </ng-container>
+
+        <ng-container *ngIf="adicionales">
+          <p-button icon="pi pi-plus" [text]="true" severity="info" (click)="asignarAdicionales(rowData)" pTooltip="Asignar Datos Adicionales"></p-button>
+        </ng-container>
+        
+        <ng-container *ngIf="operaciones">
+          <p-button icon="pi pi-plus" [text]="true" severity="info" (click)="asignarDatosOperacion(rowData)" pTooltip="Asignar Datos de la Operacion"></p-button>
+        </ng-container>
+
+        <ng-container *ngIf="pdf">
+          <p-button icon="pi pi-file-pdf" [text]="true" severity="warning" (click)="pdfClick(rowData)" pTooltip="Ver PDF"></p-button>
+        </ng-container>
+
+        <p-button *ngIf="isAdmin" icon="pi pi-pencil" [text]="true" (click)="editar(rowData)"></p-button>
+        <p-button *ngIf="isAdmin" icon="pi pi-trash" [text]="true" severity="danger" (click)="eliminar(rowData)"></p-button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

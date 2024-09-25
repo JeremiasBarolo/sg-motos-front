@@ -1,0 +1,507 @@
+<div class="header-container">
+    <h3>Service</h3>
+    <p-button icon="pi pi-plus" label="Agregar Service" [text]="true" (click)="crearVisible = true" styleClass="ml-auto"></p-button>
+</div>
+
+<div class="filter-container">
+    <p-calendar class="ml-2" [(ngModel)]="selectedDate" placeholder="Fecha" dateFormat="dd-mm-yy"></p-calendar>
+    <p-button [text]="true" icon="pi pi-search" (click)="filterByDate()"></p-button>
+</div>
+
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    [insumosVisible]="true"
+    [pdfVisible]="true"
+    (editarClick)="editarItem($event)" 
+    (eliminarClick)="eliminarItem($event)"
+    (insumoClick)="asignarInsumos($event)" 
+    (modalOpenClick)="modalOpen($event)"
+    (pdfOpenClick)="pdfOpen($event)"
+></app-tablang>
+
+<!-- <============================================ CREAR ==================================================> -->
+<p-dialog header="Crear Datos para Servicio" [modal]="true" [(visible)]="crearVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="openServiceDialog()">
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="personaId" class="font-semibold w-6rem"><strong>Cliente</strong></label>
+            <br>
+            <select id="personaId" class="flex-auto" formControlName="personaId">
+              <option *ngFor="let persona of clientes" [value]="persona.id">{{ persona.nombre }} {{ persona.apellido }}</option>
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="modelo" class="font-semibold w-6rem"><strong>Modelo</strong></label>
+            <br>
+            <input id="modelo" class="flex-auto" formControlName="modelo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="patente" class="font-semibold w-6rem"><strong>Patente</strong></label>
+            <br>
+            <input id="patente" class="flex-auto" formControlName="patente" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="color" class="font-semibold w-6rem"><strong>Color</strong></label>
+            <br>
+            <input id="color" class="flex-auto" formControlName="color" />
+        </div>
+
+        
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="num_motor" class="font-semibold w-6rem"><strong>Numero de Motor</strong></label>
+            <br>
+            <input id="num_motor" class="flex-auto" formControlName="num_motor" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="num_chasis" class="font-semibold w-6rem"><strong>Numero de Chasis</strong></label>
+            <br>
+            <input id="num_chasis" class="flex-auto" formControlName="num_chasis" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="tipo_servicio" class="font-semibold w-6rem"><strong>Tipo de Servicio</strong></label>
+            <br>
+            <select id="tipo_servicio" class="flex-auto"  formControlName="tipo_servicio">
+                <option *ngFor="let tipo of tipoServicio" [value]="tipo.id">{{ tipo.descripcion }}</option>
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="kilometros" class="font-semibold w-6rem"><strong>Kilometros</strong></label>
+            <br>
+            <input id="kilometros" class="flex-auto" type="number" formControlName="kilometros" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="estado_general" class="font-semibold w-6rem"><strong>Estado General</strong></label>
+            <br>
+            <input id="estado_general" class="flex-auto"  formControlName="estado_general" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="observaciones" class="font-semibold w-6rem"><strong>Observaciones</strong></label>
+            <br>
+            <input id="observaciones" class="flex-auto"  formControlName="observaciones" />
+        </div>
+
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="fecha_recepcion" class="font-semibold w-6rem"><strong>Fecha de Recepcion</strong></label>
+            <br>
+            <input id="fecha_recepcion" type="date" class="flex-auto" formControlName="fecha_recepcion" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="fecha_est_entrega" class="font-semibold w-6rem"><strong>Fecha Estimadad de Entrega</strong></label>
+            <br>
+            <input id="fecha_est_entrega" type="date" class="flex-auto" formControlName="fecha_est_entrega" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="hora_est_entrega" class="font-semibold w-6rem"><strong>Hora Estimada de Entrega</strong></label>
+            <br>
+            <input id="hora_est_entrega" type="time" class="flex-auto" formControlName="hora_est_entrega" />
+        </div>
+
+        
+        
+        <div class="flex justify-content-end gap-2 mt-3">
+            <p-button class="mr-1" label="Continuar" icon="pi pi-check" [text]="true" severity="success" type="submit"></p-button>
+            <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="danger" (click)="editVisible = false"></p-button>
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ EDITAR ==================================================> -->
+<p-dialog header="Editar Datos para Servicio" [modal]="true" [(visible)]="editVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="openServiceDialog()">
+
+      
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="personaId" class="font-semibold w-6rem"><strong>Cliente</strong></label>
+            <br>
+            <select id="personaId" class="flex-auto" formControlName="personaId">
+              <option *ngFor="let persona of clientes" [value]="persona.id">{{ persona.nombre }} {{ persona.apellido }}</option>
+            </select>
+        </div>
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="modelo" class="font-semibold w-6rem"><strong>Modelo</strong></label>
+            <br>
+            <input id="modelo" class="flex-auto" formControlName="modelo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="patente" class="font-semibold w-6rem"><strong>Patente</strong></label>
+            <br>
+            <input id="patente" class="flex-auto" formControlName="patente" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="color" class="font-semibold w-6rem"><strong>Color</strong></label>
+            <br>
+            <input id="color" class="flex-auto" formControlName="color" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="num_motor" class="font-semibold w-6rem"><strong>Numero de Motor</strong></label>
+            <br>
+            <input id="num_motor" class="flex-auto" formControlName="num_motor" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="num_chasis" class="font-semibold w-6rem"><strong>Numero de Chasis</strong></label>
+            <br>
+            <input id="num_chasis" class="flex-auto" formControlName="num_chasis" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="tipo_servicio" class="font-semibold w-6rem"><strong>Tipo de Servicio</strong></label>
+            <br>
+            <select id="tipo_servicio" class="flex-auto"  formControlName="tipo_servicio">
+                <option *ngFor="let tipo of tipoServicio" [value]="tipo.id">{{ tipo.descripcion }}</option>
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="kilometros" class="font-semibold w-6rem"><strong>Kilometros</strong></label>
+            <br>
+            <input id="kilometros" class="flex-auto" type="number" formControlName="kilometros" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="estado_general" class="font-semibold w-6rem"><strong>Estado General</strong></label>
+            <br>
+            <input id="estado_general" class="flex-auto"  formControlName="estado_general" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="observaciones" class="font-semibold w-6rem"><strong>Observaciones</strong></label>
+            <br>
+            <input id="observaciones" class="flex-auto"  formControlName="observaciones" />
+        </div>
+
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="fecha_recepcion" class="font-semibold w-6rem"><strong>Fecha de Recepcion</strong></label>
+            <br>
+            <input id="fecha_recepcion" type="date" class="flex-auto" formControlName="fecha_recepcion" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="fecha_est_entrega" class="font-semibold w-6rem"><strong>Fecha Estimadad de Entrega</strong></label>
+            <br>
+            <input id="fecha_est_entrega" type="date" class="flex-auto" formControlName="fecha_est_entrega" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="hora_est_entrega" class="font-semibold w-6rem"><strong>Hora Estimada de Entrega</strong></label>
+            <br>
+            <input id="hora_est_entrega" type="time" class="flex-auto" formControlName="hora_est_entrega" />
+        </div>
+
+        
+        
+        <div class="flex justify-content-end gap-2 mt-3">
+            <p-button class="mr-1" label="Continuar" icon="pi pi-check" [text]="true" severity="success" type="submit"></p-button>
+            <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="danger" (click)="editVisible = false"></p-button>
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog header="Especificar Servicios" [modal]="true" [(visible)]="datosServicioVisible" [style]="{ width: '50rem' }" (onHide)="cerrarServicios()">
+    <form [formGroup]="form">
+        <p-pickList 
+        [source]="servicios" 
+        [target]="productos.value"
+        sourceHeader="Disponibles" 
+        targetHeader="Seleccionados" 
+        dragdrop="true" 
+        sourceStyle="" 
+        targetStyle="" 
+        (onMoveToTarget)="agregarProductoDesdePickList($event)" 
+        (onMoveToSource)="eliminarProductoDesdePickList($event)">
+        <ng-template let-item pTemplate="item">
+          <div class="product-item">
+            <h5>{{ item.nombre_articulo }}</h5>
+          </div>
+        </ng-template>
+      </p-pickList>
+    </form>
+
+    <div class="flex justify-content-end gap-2">
+        <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="openServicesModal()" />
+        <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="crearVisible = false" />
+    </div>
+  </p-dialog>
+
+
+  <p-dialog header="Especificar Servicios" [modal]="true" [(visible)]="serviciosVisible" [style]="{ width: '50vw', height: '50vh' }" (onHide)="cerrarServicios()">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="servicios" class="font-semibold w-6rem"><strong>Servicios</strong></label>
+            <br>
+            <p-multiSelect 
+                [options]="checklistOptions" 
+                formControlName="selectedServicios" 
+                optionLabel="label"
+                (onChange)="agregarProductoDesdeCheckList($event)">
+            </p-multiSelect>
+        </div>
+
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check" label="Confirmar" severity="success" type="submit"></p-button>
+            <p-button icon="pi pi-times" label="Cancelar" severity="danger" (click)="serviciosVisible = false"></p-button>
+        </div>
+    </form>
+</p-dialog>
+
+
+
+<!-- <============================================ ELIMINAR ==================================================> -->
+<p-dialog header="Eliminar Datos para Servicio" [modal]="true" [(visible)]="editEliminar" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Desea usted eliminar este objeto?</span>
+    <br>
+    <br>
+    <div class="flex justify-content-end gap-2">
+        <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="eliminar()" />
+        <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editEliminar = false" />
+    </div>
+</p-dialog>
+
+<!-- <============================================ DETALLES  ==================================================> -->
+<p-dialog header="Detalles del Servicio" [modal]="true" [(visible)]="showModal" [style]="{ width: '50rem' }" (onHide)="cerrarEdit()">
+    
+    <div class="p-fluid">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="modelo"><strong>Modelo:</strong></label>
+                    <span id="modelo"> {{ cardData?.modelo }}</span>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="patente"><strong>Patente:</strong></label>
+                    <span id="patente"> {{ cardData?.patente }}</span>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="num_motor"><strong>Número de Motor:</strong></label>
+                    <span id="num_motor"> {{ cardData?.num_motor }}</span>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="color"><strong>Color:</strong></label>
+                    <span id="color"> {{ cardData?.color }}</span>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="kilometros"><strong>Kilómetros:</strong></label>
+                    <span id="kilometros"> {{ cardData?.kilometros }}</span>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="estado_general"><strong>Estado General:</strong></label>
+                    <span id="estado_general"> {{ cardData?.estado_general }}</span>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="observaciones"><strong>Observaciones:</strong></label>
+                    <span id="observaciones"> {{ cardData?.observaciones }}</span>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="tipo_servicio"><strong>Tipo de Servicio:</strong></label>
+                    <span id="tipo_servicio"> {{ cardData?.tipo_servicio }}</span>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="fecha_recepcion"><strong>Fecha de Recepción:</strong></label>
+                    <span id="fecha_recepcion"> {{ cardData?.fecha_recepcion  }}</span>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="fecha_est_entrega"><strong>Fecha Estimada de Entrega:</strong></label>
+                    <span id="fecha_est_entrega"> {{ cardData?.fecha_est_entrega }}</span>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="hora_est_entrega"><strong>Hora Estimada de Entrega:</strong></label>
+                    <span id="hora_est_entrega"> {{ cardData?.hora_est_entrega }}</span>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="recepcionista"><strong>Recepcionista:</strong></label>
+                    <span id="recepcionista"> {{ cardData?.Recepcionista }}</span>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="field">
+            <label for="stock"><strong>Detalles de los Servicios:</strong></label>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Costo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of cardData?.ServiciosTable">
+                        <td>{{ item.nombre }}</td>
+                        <td>{{ item.costo | currency }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <br>
+
+        <div class="field" *ngIf="cardData?.InsumoTable?.length > 0">
+            <label for="stock"><strong>Detalles de los Insumos:</strong></label>
+            
+            
+            
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Costo</th>
+                    <th>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span>Cantidad</span>
+                        <p-button icon="pi pi-plus" [text]="true" severity="info" (click)="asignarInsumos(cardData)" pTooltip="Asignarle Insumos"></p-button>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of cardData?.InsumoTable">
+                        <td>{{ item.nombre }}</td>
+                        <td>{{ item.costo | currency }}</td>
+                        <td>{{ item.cantidad  }}</td>
+                        
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="field">
+            <h6><strong>CHECK LIST EGRESO SERVICIO</strong></h6>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="1" disabled>
+                  <label class="form-check-label" for="1">NO APLICA</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="2" disabled >
+                  <label class="form-check-label" for="2">Cambio de aceite de motor</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="3" disabled>
+                  <label class="form-check-label" for="3">Cambio de filtro de aceite</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="4" disabled>
+                  <label class="form-check-label" for="4">Limpieza / Reemplazo de filtro de aceite</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="5" disabled>
+                  <label class="form-check-label" for="5">Limpieza de carburador / Carburación</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="6" disabled>
+                  <label class="form-check-label" for="6">Control / Registro de válvulas</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="7" disabled>
+                  <label class="form-check-label" for="7">Lubricación general</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="8" disabled>
+                  <label class="form-check-label" for="8">Ajuste de frenos</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="9" disabled>
+                  <label class="form-check-label" for="9">Cambio de filtro de aire</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="10" disabled>
+                  <label class="form-check-label" for="10">Ajuste de cadena</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="11" disabled>
+                  <label class="form-check-label" for="11">Verificación de luces</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="12" disabled>
+                  <label class="form-check-label" for="12">Verificación de neumáticos</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="13" disabled>
+                  <label class="form-check-label" for="13">Otros</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="14" disabled>
+                  <label class="form-check-label" for="14">Prueba de manejo</label>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+    <div class="flex justify-content-end gap-2 mt-3">
+        <p-button label="Volver" icon="pi pi-times" [text]="true" severity="danger" (click)="crearVisible = false"></p-button>
+    </div>
+</p-dialog>
+
+
+<p-dialog header="Historial por Fecha ({{selectedDate | date}})" [(visible)]="fechasModal" [modal]="true" [style]="{width: '75vw'}" (onHide)="cerrarFecha()">
+    <p-table [value]="filteredProducts" [paginator]="true" [rows]="10" [responsive]="true" [styleClass]="'table shop-table'">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Modelo</th>
+          <th>Patente</th>
+          <th>Cliente</th>
+          <th>Tipo de Servicio</th>
+          <th>Recepcionista</th>
+          <th>Fecha Estimada de Entrega</th>
+          <th>Hora Estimada de Entrega</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-i="rowIndex">
+        <tr>
+          <td (click)="modalOpen(item)">{{ item.modelo }}</td>
+          <td (click)="modalOpen(item)">{{ item.patente}}</td>
+          <td (click)="modalOpen(item)">{{ item.cliente}}</td>
+          <td (click)="modalOpen(item)">{{ item.tipo_servicio}}</td>
+          <td (click)="modalOpen(item)">{{ item.Recepcionista}}</td>
+          <td (click)="modalOpen(item)">{{ item.fecha_est_entrega}}</td>
+          <td (click)="modalOpen(item)">{{ item.hora_est_entrega}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+</p-dialog>

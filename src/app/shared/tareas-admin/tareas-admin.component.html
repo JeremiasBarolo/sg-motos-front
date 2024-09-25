@@ -1,0 +1,58 @@
+<div class="col">
+  <div class="card tareas-card radius-10">
+    <div class="card-body tareas-card-body">
+      <div class="d-flex align-items-center mb-3">
+        <h6 class="mb-0">Tareas Pendientes   
+          <span pTooltip="El color rojo indica las tareas de mayor importancia. 
+            El amarillo tiene una importancia media. 
+            El verde son las de menor importancia." tooltipPosition="top">
+             <i class="pi pi-info-circle"></i>
+          </span>
+        </h6>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tarea of pagedTareas">
+            <td (click)="modalOpen(tarea)">
+              <div class="color-box" [ngClass]="{
+                'color-verde': tarea.color === 'verde',
+                'color-amarillo': tarea.color === 'amarillo',
+                'color-rojo': tarea.color === 'rojo'
+              }"></div>
+              {{tarea.titulo}}
+            </td>
+            <td class="align-middle" (click)="modalOpen(tarea)">
+              <span class="estado" [ngClass]="{
+                'badge-pendiente': tarea.estado === 'Pendiente',
+                'badge-proceso': tarea.estado === 'En Proceso',
+                'badge-completada': tarea.estado === 'Completada'
+              }">{{ tarea.estado }}</span>
+            </td>
+            <td>
+              <p-button *ngIf="tarea.estado === 'En Proceso'" icon="pi pi-check" [text]="true" severity="success" (click)="finalizarTarea(tarea)" (click)="completed(tarea.id, tarea.estado)" ></p-button>
+              <p-button *ngIf="tarea.estado === 'Pendiente'" icon="pi pi-play" [text]="true" severity="primary" (click)="tareaEnProceso(tarea)" (click)="completed(tarea.id, tarea.estado)"></p-button>
+              <p-button *ngIf="tarea.estado === 'Completada'" icon="pi pi-check-circle" [text]="true" severity="primary" [disabled]="tarea.estado === 'Completada'"></p-button>
+            
+              <!-- Botón para retroceder el estado -->
+              <p-button icon="pi pi-arrow-left" [text]="true" severity="warning" (click)="volverAtras(tarea)" (click)="completed(tarea.id, tarea.estado)"></p-button>
+            </td>
+            
+          </tr>
+        </tbody>
+      </table>
+      <div class="paginator-container">
+        <p-paginator [rows]="pageSize" [totalRecords]="totalRecords" (onPageChange)="onPageChange($event)"></p-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

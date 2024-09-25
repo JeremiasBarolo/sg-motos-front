@@ -1,0 +1,12 @@
+<div class="header-container">
+    <h3>Tipos de Movimientos </h3>
+  </div>
+
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    (editarClick)="editarItem($event)" 
+    (eliminarClick)="eliminarItem($event)"
+    [accionesVisible]="false"
+></app-tablang>
+

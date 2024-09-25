@@ -1,0 +1,181 @@
+<div class="header-container">
+    <h3>Ventas de Motos</h3>
+    <p-button icon="pi pi-plus" label="Agregar Venta" [text]="true" (click)="openCrearVentaDialog()" styleClass="ml-auto"></p-button>
+</div>
+
+<div class="filter-container">
+    <p-calendar class="ml-2" [(ngModel)]="selectedDate" placeholder="Fecha" dateFormat="dd-mm-yy"></p-calendar>
+    <p-button [text]="true" icon="pi pi-search" (click)="filterByDate()"></p-button>
+</div>
+
+<div class="dropdown-container">
+    <p-dropdown 
+      [options]="tipoMovimientoChoise" 
+      optionLabel="TipoMovimiento" 
+      placeholder="Seleccionar Tipo Movimiento"
+      [(ngModel)]="selectedTipo"
+      (onChange)="onClientChange($event)">
+    </p-dropdown>
+</div>
+
+
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    [pdfVisible]="true"
+    [operacionesVisible]="true"
+    (editarClick)="editarItem($event)" 
+    (eliminarClick)="eliminarItem($event)"
+    (modalOpenClick)="modalOpen($event)"
+    (pdfOpenClick)="openComprobarModal($event)"
+    (operacionesClick)="redirectOperaciones($event, 'OPERACION')"
+></app-tablang>
+
+
+<!-- <================================ CREATE =======================================> -->
+<p-dialog header="Crear Venta" [modal]="true" [(visible)]="crearVisible" [style]="{ width: '50rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()"> 
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="personaId" class="font-semibold w-6rem"><strong>Cliente</strong></label>
+            <br>
+            <select id="personaId" class="flex-auto" formControlName="personaId">
+                <option *ngFor="let persona of clientes" [value]="persona.id">{{ persona.nombre }} {{ persona.apellido }}</option>
+            </select>
+        </div>
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="motos" class="font-semibold w-6rem"><strong>Motos</strong></label>
+            <div class="flex align-items-center gap-3 mb-3">
+                <p-dropdown 
+                id="motoId" 
+                [options]="motosDisponibles" 
+                formControlName="motoId" 
+                optionValue="motoId"
+                optionLabel="nombreMoto" 
+                placeholder="Selecciona una moto"
+                [style]="{ width: '100%' }">
+              </p-dropdown>
+            </div>
+        </div>
+        
+        <div class="flex justify-content-end gap-2 mt-3">
+            <p-button class="mr-1" label="Siguiente" icon="pi pi-arrow-right" [text]="true" severity="success" type="submit"></p-button>
+            <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="danger" (click)="crearVisible = false"></p-button>
+        </div>
+    </form>
+</p-dialog>
+
+
+<!-- <================================ UPDATE =======================================> -->
+<p-dialog header="Editar Venta" [modal]="true" [(visible)]="editVisible" [style]="{ width: '50rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="personaId" class="font-semibold w-6rem"><strong>Cliente</strong></label>
+            <br>
+            <select id="personaId" class="flex-auto" formControlName="personaId">
+                <option *ngFor="let persona of clientes" [value]="persona.id"> {{ persona.nombre }} {{ persona.apellido }}  </option>
+            </select>
+        </div>
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="motos" class="font-semibold w-6rem"><strong>Motos</strong></label>
+            <div class="flex align-items-center gap-3 mb-3">
+                <p-dropdown 
+                id="motoId" 
+                [options]="motosDisponibles" 
+                formControlName="motoId" 
+                optionValue="motoId"
+                optionLabel="nombreMoto" 
+                placeholder="Selecciona una moto"
+                [style]="{ width: '100%' }">
+              </p-dropdown>
+            </div>
+        </div>
+        
+        <div class="flex justify-content-end gap-2 mt-3">
+            <p-button class="mr-1" label="Siguiente" icon="pi pi-arrow-right" [text]="true" severity="success" type="submit"></p-button>
+            <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="danger" (click)="editVisible = false"></p-button>
+        </div>
+    </form>
+</p-dialog>
+
+
+ <!-- <============================================ ELIMINAR ==================================================> -->
+ <p-dialog header="Eliminar Venta" [modal]="true" [(visible)]="editEliminar" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Desea usted eliminar este objeto?</span>
+    <br>
+    <br>
+    <div class="flex justify-content-end gap-2">
+        <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="Eliminar()" />
+        <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editEliminar = false" />
+    </div>
+</p-dialog>
+
+<p-dialog header="Comprobando Datos Faltantes" [(visible)]="comprobarDatosAdicionales" [modal]="true">
+    <div *ngIf="clientHasInfo && operacionHasInfo">
+        <p>Todos los datos han sido asignados correctamente.</p>
+        <li *ngIf="clientHasInfo">
+            <i class="pi pi-check" style="color: green;"></i>
+            Contiene información del cliente.
+            
+        </li>
+        <li *ngIf="operacionHasInfo">
+            <i class="pi pi-check" style="color: green;"></i>
+            Contiene información de la operación.
+        </li>
+    </div>
+    <div *ngIf="!clientHasInfo || !operacionHasInfo">
+        <p>Faltan datos por rellenar:</p>
+        <ul>
+            <li *ngIf="clientHasInfo">
+                <i class="pi pi-times" style="color: green;"></i>
+                Contiene información del cliente.
+                
+            </li>
+            <li *ngIf="operacionHasInfo">
+                <i class="pi pi-check" style="color: green;"></i>
+                Contiene información de la operación.
+            </li>
+
+            <li *ngIf="!clientHasInfo">
+                <i class="pi pi-times" style="color: red;"></i>
+                Falta información del cliente.
+                
+            </li>
+            <li *ngIf="!operacionHasInfo">
+                <i class="pi pi-times" style="color: red;"></i>
+                Falta información de la operación.
+            </li>
+        </ul>
+    </div>
+    <button *ngIf="!clientHasInfo" pButton [text]="true"  label="Asignar Información al Cliente" type="button" (click)="redirectOperaciones(cardData, 'ADICIONALES')"  icon="pi pi-user-plus" ></button>
+    <br>
+    <button *ngIf="!operacionHasInfo" pButton [text]="true" label="Asignar Información para la Operacion" type="button" (click)="redirectOperaciones(cardData, 'OPERACION')"  icon="pi pi-list" style="color: rgb(28, 201, 231);"></button>
+    <br>
+    <button *ngIf="clientHasInfo && operacionHasInfo" pButton [text]="true" label="Ver PDF" type="button" (click)="redirectToPDF(cardData)" icon="pi pi-file-pdf" style="color: rgb(28, 231, 79);"></button>
+</p-dialog>
+
+
+<p-dialog header="Historial por Fecha ({{selectedDate | date}})" [(visible)]="fechasModal" [modal]="true" [style]="{width: '75vw'}" (onHide)="cerrarFecha()">
+    <p-table [value]="filteredProducts" [paginator]="true" [rows]="10" [responsive]="true" [styleClass]="'table shop-table'">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Moto</th>
+          <th>Cliente</th>
+          <th>Recepcionista</th>
+          <th>Tipo Movimiento</th>
+          <th>Subtotal</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-i="rowIndex">
+        <tr>
+          <td (click)="modalOpen(item)">{{ item.nombreMoto }}</td>
+          <td (click)="modalOpen(item)">{{ item.cliente}}</td>
+          <td (click)="modalOpen(item)">{{ item.usuario}}</td>
+          <td (click)="modalOpen(item)">{{ item.TipoMovimiento}}</td>
+          <td (click)="modalOpen(item)">{{ item.subtotal | currency}}</td>
+          
+        </tr>
+      </ng-template>
+    </p-table>
+</p-dialog>

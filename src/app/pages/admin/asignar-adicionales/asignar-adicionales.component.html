@@ -1,0 +1,164 @@
+<form [formGroup]="insumoForm" (ngSubmit)="onSubmit()">
+  <div class="container">
+    <h2 class="text-center">Asignar Adicionales</h2>
+    
+    <h5 class="section-title">PERSONA FÍSICA</h5>
+
+    <div class="row col-md-12">
+      <div class="col-md-6 mb-3">
+        <label for="telComercial">Teléfono Comercial</label>
+        <input id="telComercial" type="text" class="form-control" formControlName="telComercial">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="estadoCivil">Estado Civil</label>
+        <input id="estadoCivil" type="text" class="form-control" formControlName="estadoCivil">
+      </div>
+  
+      <div class="col-md-6 mb-3">
+        <label for="empActual">Empleo Actual</label>
+        <input id="empActual" type="text" class="form-control" formControlName="empActual">
+      </div>
+  
+      <div class="col-md-6 mb-3">
+        <label for="domicilioEmp">Domicilio de Empleo</label>
+        <input id="domicilioEmp" type="text" class="form-control" formControlName="domicilioEmp">
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="telEmp">Teléfono de Empleo</label>
+        <input id="telEmp" type="number" class="form-control" formControlName="telEmp">
+      </div>
+  
+      <div class="col-md-6 mb-3">
+        <label for="profesion">Profesión</label>
+        <input id="profesion" type="text" class="form-control" formControlName="profesion">
+      </div>
+  
+      <div class="col-md-6 mb-3">
+        <label for="fechaIngreso">Fecha de Ingreso</label>
+        <input id="fechaIngreso" type="date" class="form-control" formControlName="fechaIngreso">
+      </div>
+  
+      <div class="col-md-6 mb-3">
+        <label for="ingresosMensuales">Ingresos Mensuales</label>
+        <input id="ingresosMensuales" type="text" class="form-control" formControlName="ingresosMensuales">
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="nombreConyugue">Nombre del Cónyuge</label>
+        <input id="nombreConyugue" type="text" class="form-control" formControlName="nombreConyugue">
+      </div>
+  
+      <div class="col-md-6 mb-3">
+        <label for="trabaja">¿Trabaja?</label>
+        <input id="trabaja" type="text" class="form-control" formControlName="trabaja">
+      </div>
+  
+      <div class="col-md-6 mb-3">
+        <label for="dondeTrabaja">¿Dónde Trabaja?</label>
+        <input id="dondeTrabaja" type="text" class="form-control" formControlName="dondeTrabaja">
+      </div>
+  
+      <div class="col-md-6 mb-3">
+        <label for="dniConyugue">DNI del Cónyuge</label>
+        <input id="dniConyugue" type="number" class="form-control" formControlName="dniConyugue">
+      </div>
+    </div>
+
+    
+    <h5 class="section-title">PERSONA JURÍDICA</h5>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="razonSocial">Razón Social</label>
+        <input id="razonSocial" type="text" class="form-control" formControlName="razonSocial">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="ramoDeActividad">Ramo de Actividad</label>
+        <input id="ramoDeActividad" type="text" class="form-control" formControlName="ramoDeActividad">
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="cuitJuridico">CUIT Jurídico</label>
+        <input id="cuitJuridico" type="number" class="form-control" formControlName="cuitJuridico">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="ivaJuridico">IVA Jurídico</label>
+        <input id="ivaJuridico" type="text" class="form-control" formControlName="ivaJuridico">
+      </div>
+    </div>
+
+    <div class="row ">
+      <div class="col-md-6 mb-3">
+        <label for="ventasMensuales">Ventas Mensuales</label>
+        <input id="ventasMensuales" type="text" class="form-control" formControlName="ventasMensuales">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="domicilioJuridico">Domicilio Jurídico</label>
+        <input id="domicilioJuridico" type="text" class="form-control" formControlName="domicilioJuridico">
+      </div>
+    
+      <div class="col-md-6 mb-3">
+        <label for="telefonoJuridico">Teléfono Jurídico</label>
+        <input id="telefonoJuridico" type="number" class="form-control" formControlName="telefonoJuridico">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="telefax">Telefax</label>
+        <input id="telefax" type="text" class="form-control" formControlName="telefax">
+      </div>
+    </div>
+
+    <h5 class="section-title">GARANTE</h5>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="nombreGarante">Nombre del Garante</label>
+        <input id="nombreGarante" type="text" class="form-control" formControlName="nombreGarante">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="domicilioGarante">Domicilio del Garante</label>
+        <input id="domicilioGarante" type="text" class="form-control" formControlName="domicilioGarante">
+      </div>
+    
+      <div class="col-md-6 mb-3">
+        <label for="cuitGarante">CUIT del Garante</label>
+        <input id="cuitGarante" type="number" class="form-control" formControlName="cuitGarante">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="direccionEmpGarante">Dirección del Empleo del Garante</label>
+        <input id="direccionEmpGarante" type="text" class="form-control" formControlName="direccionEmpGarante">
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6 mb-3">
+        <label for="casaPropiaAlquilada">Casa Propia/Alquilada</label>
+        <input id="casaPropiaAlquilada" type="text" class="form-control" formControlName="casaPropiaAlquilada">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="edadGarante">Edad del Garante</label>
+        <input id="edadGarante" type="number" class="form-control" formControlName="edadGarante">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="estadoCivilGarante">Estado Civil del Garante</label>
+        <input id="estadoCivilGarante" type="text" class="form-control" formControlName="estadoCivilGarante">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="telGarante">Estado Civil del Garante</label>
+        <input id="telGarante" type="text" class="form-control" formControlName="telGarante">
+      </div>
+      
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-primary" >Guardar</button>
+        
+      </div>
+
+      <button  class="btn btn-primary" (click)="fillFormWithRandomData()" >rellenar</button>
+    </div>
+  </div>
+</form>

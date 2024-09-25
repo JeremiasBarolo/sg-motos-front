@@ -1,0 +1,126 @@
+<div class="header-container">
+    <h3>Usuarios</h3>
+    <p-button icon="pi pi-plus" label="Agregar Usuario" [text]="true" (click)="crearVisible = true" styleClass="ml-auto"></p-button>
+</div>
+
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    (editarClick)="editarItem($event)" 
+    (eliminarClick)="eliminarItem($event)"
+></app-tablang>
+
+<!-- <============================================ CREAR ==================================================> -->
+<p-dialog header="Crear Usuario" [modal]="true" [(visible)]="crearVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="user" class="font-semibold w-6rem"><strong>Usuario</strong></label>
+            <br>
+            <input id="user" class="flex-auto" formControlName="user" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="password" class="font-semibold w-6rem"><strong>Constraseña</strong></label>
+            <br>
+            <input id="password" type="password"  class="flex-auto" formControlName="password" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="personaId" class="font-semibold w-6rem"><strong>Empleado</strong></label>
+            <br>
+            <select id="personaId" class="flex-auto" formControlName="personaId">
+              <option *ngFor="let empleado of empleados" [value]="empleado.id">{{empleado.nombre}} {{empleado.apellido}}</option>
+              
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="rolId" class="font-semibold w-6rem"><strong> Rol</strong></label>
+            <br>
+            <select id="rolId" class="flex-auto" formControlName="rolId">
+                <option *ngFor="let rol of roles" [value]="rol.id">{{rol.descripcion}} </option>
+            </select>
+        </div>
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="crearVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ EDITAR ==================================================> -->
+<p-dialog header="Editar Usuario" [modal]="true" [(visible)]="editVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="user" class="font-semibold w-6rem"><strong>Usuario</strong></label>
+            <br>
+            <input id="user" class="flex-auto" formControlName="user" />
+        </div>
+
+      
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="personaId" class="font-semibold w-6rem"><strong>Empleado</strong></label>
+            <br>
+            <select id="personaId" class="flex-auto" formControlName="personaId">
+              <option *ngFor="let empleado of empleados" [value]="empleado.id">{{empleado.nombre}} {{empleado.apellido}}</option>
+              
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="rolId" class="font-semibold w-6rem"><strong> Rol</strong></label>
+            <br>
+            <select id="rolId" class="flex-auto" formControlName="rolId">
+                <option *ngFor="let rol of roles" [value]="rol.id">{{rol.descripcion}} </option>
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="rolId" class="font-semibold w-6rem"><strong> Desea cambiar la constraseña?</strong></label>
+            <br>
+            <p-button class="mr-1" label="Cambiar Constraseña" severity="primary" (click)="abrirCambioPassword()" />
+        </div>
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="crearVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ ELIMINAR ==================================================> -->
+<p-dialog header="Eliminar Usuario" [modal]="true" [(visible)]="editEliminar" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Desea usted eliminar este objeto?</span>
+    <br>
+    <br>
+    <div class="flex justify-content-end gap-2">
+        <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="Eliminar()" />
+        <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editEliminar = false" />
+    </div>
+</p-dialog>
+
+<p-dialog header="Cambiar Constraseña" [modal]="true" [(visible)]="cambioPassword" [style]="{ width: '25rem' }">
+    <form [formGroup]="form">
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="newPassword" class="font-semibold w-6rem"><strong>Nueva Constraseña</strong></label>
+            <br>
+            <input id="newPassword" class="flex-auto" type="password" formControlName="newPassword" />
+        </div>
+    
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="rnewPassword" class="font-semibold w-6rem"><strong>Repetir Constraseña</strong></label>
+            <br>
+            <input id="rnewPassword" type="password"  class="flex-auto" formControlName="rnewPassword" />
+        </div>
+    
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="CambiarPassword(cardData)" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editEliminar = false" />
+        </div>
+    </form>
+   
+</p-dialog>

@@ -1,0 +1,221 @@
+<div class="header-container">
+    <h3>Pedidos de Stock</h3>
+    <p-button icon="pi pi-plus" label="Agregar Pedido de Stock" [text]="true" (click)="crearVisible = true" styleClass="ml-auto"></p-button>
+</div>
+
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    (editarClick)="editarItem($event)" 
+    (eliminarClick)="eliminarItem($event)"
+    (modalOpenClick)="modalOpen($event)"
+></app-tablang>
+
+<!-- <============================================ CREAR ==================================================> -->
+<p-dialog header="Crear Venta" [modal]="true" [(visible)]="crearVisible" [style]="{ width: '100vw' }" (onHide)="modalCreateClose()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="flex align-items-center gap-3 mb-3">
+      <label for="descripcion" class="font-semibold w-6rem"><strong>Nombre del Pedido</strong></label>
+        <br>
+        <input id="descripcion" class="flex-auto" formControlName="descripcion" />
+    </div>
+      <div class="card mb-3 border border-0 mx-auto">
+        <div class="row mt-4 ml-3">
+          <div class="col-md-6 text-center">
+            <h6>Articulos Disponibles</h6>
+            <div class="card" style="height: 550px; overflow-y: auto; margin-left: 6vw;">
+              <div class="card-body">
+                <ul class="list-group" *ngFor="let entity of options">
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ entity?.nombre }}
+                    <button class="btn btn-success" (click)="selectedEntity(entity)">Agregar Insumo</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+    
+          <!-- Lista de Insumos Seleccionados -->
+          <div class="col-md-5 text-center">
+            <h6>Artículos Seleccionados</h6>
+            <div class="spacer">
+              <div class="container">
+                <div class="row mt-5">
+                  <div class="col-lg-12">
+                    <div class="row shop-listing">
+                      <p-table [value]="selectedEntities" [paginator]="true" [rows]="10" [responsive]="true"
+                        [styleClass]="'table shop-table'">
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th>Nombre</th>
+                            
+                            <th>Cantidad</th>
+                            <th></th> 
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-item let-i="rowIndex">
+                          <tr>
+                            <td>{{ item?.nombre }}</td>
+                            
+                            <td>
+                              <button type="button" class="btn btn-primary" (click)="incrementQuantity(item)">+</button>
+                              {{ item?.cantidad || 0 }}
+                              <button type="button" class="btn btn-primary" (click)="decrementQuantity(item)">-</button>
+                            </td>
+
+                            <td>
+                              <button type="button" pButton icon="pi pi-trash" class="btn btn-danger btn-sm" (click)="returnEntities(item)"></button>
+                            </td>
+                          </tr>
+                        </ng-template>
+                      </p-table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+  <div class="flex justify-content-end gap-2 mt-3">
+    <p-button class="mr-2 mt-1" label="Siguiente" icon="pi pi-arrow-right" [text]="true" severity="success" type="submit"></p-button>
+    <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="danger" (click)="crearVisible = false"></p-button>
+  </div>
+</form>
+  </p-dialog>
+
+
+<!-- <============================================ EDITAR ==================================================> -->
+<p-dialog header="Crear Venta" [modal]="true" [(visible)]="editVisible" [style]="{ width: '100vw' }" (onHide)="modalCreateClose('total')">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="flex align-items-center gap-3 mb-3">
+          <label for="descripcion" class="font-semibold w-6rem"><strong>Nombre del Pedido</strong></label>
+            <br>
+            <input id="descripcion" class="flex-auto" formControlName="descripcion" />
+        </div>
+          <div class="card mb-3 border border-0 mx-auto">
+            <div class="row mt-4 ml-3">
+              <div class="col-md-6 text-center">
+                <h6>Articulos Disponibles</h6>
+                <div class="card" style="height: 550px; overflow-y: auto; margin-left: 6vw;">
+                  <div class="card-body">
+                    <ul class="list-group" *ngFor="let entity of options">
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ entity?.nombre }}
+                        <button class="btn btn-success" (click)="selectedEntity(entity)">Agregar Insumo</button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+        
+              <!-- Lista de Insumos Seleccionados -->
+              <div class="col-md-5 text-center">
+                <h6>Artículos Seleccionados</h6>
+                <div class="spacer">
+                  <div class="container">
+                    <div class="row mt-5">
+                      <div class="col-lg-12">
+                        <div class="row shop-listing">
+                          <p-table [value]="selectedEntities" [paginator]="true" [rows]="10" [responsive]="true"
+                            [styleClass]="'table shop-table'">
+                            <ng-template pTemplate="header">
+                              <tr>
+                                <th>Nombre</th>
+                                
+                                <th>Cantidad</th>
+                                <th></th> 
+                              </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item let-i="rowIndex">
+                              <tr>
+                                <td>{{ item?.nombre }}</td>
+                                
+                                <td>
+                                  <button type="button" class="btn btn-primary" (click)="incrementQuantity(item)">+</button>
+                                  {{ item?.cantidad || 0 }}
+                                  <button type="button" class="btn btn-primary" (click)="decrementQuantity(item)">-</button>
+                                </td>
+
+                                <td>
+                                  <button type="button" pButton icon="pi pi-trash" class="btn btn-danger btn-sm" (click)="returnEntities(item)"></button>
+                                </td>
+                              </tr>
+                            </ng-template>
+                          </p-table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+
+      <div class="flex justify-content-end gap-2 mt-3">
+        <p-button class="mr-2 mt-1" label="Siguiente" icon="pi pi-arrow-right" [text]="true" severity="success" type="submit"></p-button>
+        <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="danger" (click)="crearVisible = false"></p-button>
+      </div>
+    </form>
+  </p-dialog> 
+
+<!-- <============================================ ELIMINAR ==================================================> -->
+<p-dialog header="Eliminar Stock" [modal]="true" [(visible)]="editEliminar" [style]="{ width: '50vw' }">
+    <span class="p-text-secondary block mb-5">Desea usted eliminar este objeto?</span>
+    <br>
+    <br>
+    <div class="flex justify-content-end gap-2">
+        <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="Eliminar()" />
+        <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editEliminar = false" />
+    </div>
+</p-dialog>
+
+ <!-- <============================================ MOSTRAR DATA ==================================================> -->
+ <p-dialog header="Detalles del Pedido" [modal]="true" [(visible)]="detailModal"  (onHide)="modalClose()" [style]="{ width: '50vw' }">
+    <div class="p-fluid">
+        <div class="field">
+            <label for="description"><strong>Descripcion:</strong></label>
+            <span id="description"> {{ cardData?.descripcion }}</span>
+        </div>
+        <div class="field">
+          <label for="total"><strong>Total del Pedido:</strong></label>
+            <span id="total"> {{ cardData?.total | currency }}</span>
+      </div>
+        <br>
+        <br>
+        <br>
+  
+        <div class="field">
+            <label for="stock"><strong>Detalles de los Artículos:</strong></label>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Proveedor</th>
+                        <th>Costo</th>
+                        <th>Total</th>
+                        <th>Cantidad Solicitada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of cardData?.Pedido">
+                        <td>{{ item.nombre }}</td>
+                        <td>{{ item.proveedor}}</td>
+                        <td>{{ item.costo | currency }}</td>
+                        <td>{{ item.total | currency }}</td>
+                        <td class="text-center">{{ item.cantidad }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </div>
+    <div class="flex justify-content-end gap-2 mt-3">
+      <ng-container  *ngIf="cardData?.estado === 'En Preparacion'">
+        <p-button class="mr-1" label="Finalizar Pedido" icon="pi pi-arrow-right" [text]="true" severity="success" (onClick)="onSubmit(1)"></p-button>
+      </ng-container>
+      <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="danger" (click)="modalClose()"></p-button>
+    </div>
+  
+  </p-dialog>

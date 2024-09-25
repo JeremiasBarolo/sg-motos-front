@@ -1,0 +1,25 @@
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
+    height: 40px; /* Ajusta la altura para que coincida con el dropdown */
+    padding: 0 10px; /* Ajusta el padding si es necesario */
+    border: 1px solid #ccc; /* Ajusta el borde si es necesario */
+    border-radius: 4px; /* Ajusta el radio de borde si es necesario */
+    margin-right: 10px; /* Espacio entre el input y el dropdown */
+  }
+  
+  p-dropdown {
+    height: 40px; /* Ajusta la altura para que coincida con el input */
+  }
+  

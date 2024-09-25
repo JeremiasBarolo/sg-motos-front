@@ -1,0 +1,199 @@
+
+<div class="header-container">
+  <h3>Datos para {{cardData?.modelo}} </h3>
+  <p-button icon="pi pi-file-pdf" label="Generar PDF" [text]="true" (click)="generatePDF()" styleClass="ml-auto"></p-button>
+</div>
+
+<div class="container my-4" #pdfContent>
+
+  <div class="container my-4">
+    <div class="row mb-2">
+      <div class="col-6">
+        <img src="../../../assets/images/logo-sg-motos.png" alt="Logo" style="max-height: 10vw;">
+      </div>
+      <div class="col-6 text-right">
+        <h5><strong>ORDEN DE SERVICIO</strong></h5>
+        <p>Nº <strong>{{cardData.id}}</strong></p>
+      </div>
+    </div>
+    <div class="bordered p-3 mb-2">
+      <h6><strong>DATOS DEL CLIENTE</strong></h6>
+      <div class="row">
+        <div class="col-6 bordered p-1 ">Nombre y Apellido: <strong>  {{recepcionista?.nombre}} {{recepcionista?.apellido}} </strong> </div>
+        <div class="col-6 bordered p-1">DNI: <strong>{{recepcionista?.dni}}</strong></div>
+        <div class="col-6 bordered p-1">Dirección:<strong> {{recepcionista?.direccion}} {{recepcionista?.nro_direccion}}</strong></div>
+        <div class="col-6 bordered p-1">Localidad: <strong>{{recepcionista?.Localidad}}</strong> </div>
+        <div class="col-6 bordered p-1">Tel.: <strong>{{recepcionista?.telefono}}</strong> </div>
+        <div class="col-6 bordered p-1">E-mail: <strong>{{recepcionista?.mail}}</strong></div>
+      </div>
+    </div>
+    <div class="bordered p-1 mb-2">
+      <h6><strong>TIPO DE SERVICIO</strong> </h6>
+      <div class="row">
+        <div class="col-6">
+            <div class="bordered pl-1">
+              <input type="checkbox"  id="Servicio Garantia" disabled>
+              <label for="servicioGarantia" class="ml-2" id="servicioGarantiaLabel"> Servicio Garantia</label>
+            </div>
+            <div class="bordered pl-1">
+              <input type="checkbox" id="Reparacion General" disabled>
+              <label for="reparacionGral" class="ml-2" id="reparacionGralLabel"> Reparacion General</label>
+            </div>
+            <div class="bordered pl-1">
+              <input type="checkbox" id="Mantenimiento Periodico" disabled>
+              <label for="mantenimientoPeriodico" class="ml-2" id="mantenimientoPeriodicoLabel"> Mantenimiento Periodico</label>
+            </div>
+            <div class="bordered pl-1">
+              <input type="checkbox" id="Puesta Marcha" disabled>
+              <label for="puestaMarcha" class="ml-2" id="puestaMarchaLabel"> Puesta Marcha</label>
+            </div>
+            <div class="bordered pl-1">
+              <input type="checkbox" id="Otro Servicio" disabled>
+              <label for="otroServicio" class="ml-2" id="otroServicioLabel"> Otro Servicio</label>
+            </div>
+          </div>
+        <div class="col-6">
+          <div class="bordered p-1">Fecha Recep.: <strong> {{cardData.fecha_recepcion}}</strong></div>
+          <!-- <div class="bordered p-1">Hora: <strong>XX:XX</strong></div> -->
+          <div class="bordered p-1">Recepcionista: <strong>{{cardData.Recepcionista}}</strong></div>
+          <div class="bordered p-1">Fecha Est. Entrega: <strong>{{cardData.fecha_est_entrega}}</strong></div>
+          <div class="bordered p-1">Hora Est. Entrega: <strong>{{cardData.hora_est_entrega}}</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="bordered p-3 mb-2">
+      <h6 class="blockquote"><strong>DATOS DEL VEHÍCULO</strong></h6>
+      <div class="row">
+        <div class="col-3 bordered p-1">Modelo: <strong>{{cardData.modelo}}</strong></div>
+        <div class="col-3 bordered p-1">Color: <strong>{{cardData.color}}</strong></div>
+        <div class="col-3 bordered p-1">Patente: <strong>{{cardData.patente}}</strong></div>
+        <div class="col-3 bordered p-1">Kms: <strong>{{cardData.kilometros}}</strong></div>
+        <div class="col-6 bordered p-1">Nº de Motor: <strong>{{cardData.num_motor}}</strong></div>
+        <div class="col-6 bordered p-1">Nº Chasis: <strong>{{cardData.num_chasis}}</strong></div>
+      </div>
+    </div>
+    <div class=" bordered p-2 mb-2">
+      <h6 class="blockquote"> <strong>ESTADO GENERAL</strong></h6>
+      <div class="bordered p-1" style="height: 50px;"><strong >{{cardData.estado_general}}</strong></div>
+    </div>
+    <div class="bordered p-2 mb-2">
+      <h6> <strong>DESCRIPCIÓN DEL TRABAJO</strong></h6>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>CÓDIGO</th>
+            <th>DESCRIPCIÓN TRABAJO REALIZADO</th>
+            <th>TIPO ART.</th>
+            <th>CANT.</th>
+            <th>COSTO REP.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of cardData.Servicios" style="color: white;" >
+            <td>{{item.id}}</td>
+            <td>{{item.nombre}}</td>
+            <td>{{item.tipoArticulo}}</td>
+            <td>{{item.cantidad}}</td>
+            <td>{{item.costo | currency}}</td>
+            
+            
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bordered pr-3 mb-2">
+      <div class="row">
+        <div class="col-6">Total Servicios: </div>
+        <div class="col-6 bordered p-1">{{cardData.subtotal | currency}}</div>
+        <div class="col-6">Mano de Obra:</div>
+        <div class="col-6 bordered p-1">{{ManoDeObra(cardData.subtotal) | currency}}</div>
+        <div class="col-6">Total: </div>
+        <div class="col-6 bordered p-1">{{CalcularSubtotalFinal(cardData.subtotal) | currency }}</div>
+      </div>
+    </div>
+    <div class="bordered p-2">
+      <h6>Observaciones:</h6>
+      <div class="bordered p-1" style="height: 50px;"><strong>{{cardData.observaciones}}</strong></div>
+    </div>
+    <div class="bordered p-2 mb-2">
+      <h6><strong>CHECK LIST EGRESO SERVICIO</strong></h6>
+      <div class="row">
+        
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="1" disabled>
+                <label class="form-check-label" for="1">NO APLICA</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="2" disabled >
+                <label class="form-check-label" for="2">Cambio de aceite de motor</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="3" disabled>
+                <label class="form-check-label" for="3">Cambio de filtro de aceite</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="4" disabled>
+                <label class="form-check-label" for="4">Limpieza / Reemplazo de filtro de aceite</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="5" disabled>
+                <label class="form-check-label" for="5">Limpieza de carburador / Carburación</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="6" disabled>
+                <label class="form-check-label" for="6">Control / Registro de válvulas</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="7" disabled>
+                <label class="form-check-label" for="7">Lubricación general</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="8" disabled>
+                <label class="form-check-label" for="8">Ajuste de frenos</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="9" disabled>
+                <label class="form-check-label" for="9">Cambio de filtro de aire</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="10" disabled>
+                <label class="form-check-label" for="10">Ajuste de cadena</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="11" disabled>
+                <label class="form-check-label" for="11">Verificación de luces</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="12" disabled>
+                <label class="form-check-label" for="12">Verificación de neumáticos</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="13" disabled>
+                <label class="form-check-label" for="13">Otros</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="14" disabled>
+                <label class="form-check-label" for="14">Prueba de manejo</label>
+              </div>
+            
+        </div>
+      </div>
+    </div>
+    <div class="bordered pr-3 mb-2">
+      <div class="row">
+        <div class="col-6">Fecha de Retiro: <span id="fechaRetiroLabel"></span></div>
+        <div class="col-6 bordered p-1"><span id="fechaRetiro"></span></div>
+        <div class="col-6">Hora de Retiro: <span id="horaRetiroLabel"></span></div>
+        <div class="col-6 bordered p-1"><span id="horaRetiro"></span></div>
+        <div class="col-6">Firma del Cliente:</div>
+        <div class="col-6 bordered p-1" style="height: 50px;"><span id="firmaCliente"></span></div>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>

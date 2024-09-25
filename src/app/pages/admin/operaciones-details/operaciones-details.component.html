@@ -1,0 +1,161 @@
+<form [formGroup]="insumoForm" (ngSubmit)="onSubmit()">
+    <div class="container">
+      <h2 class="text-center">Asignar Datos de Operacion</h2>
+ 
+  
+      <h5 class="section-title">OPERACION</h5>
+      <div class="row">
+        <!-- <div class="col-md-6 mb-3" >
+          <label for="precioOperacion">Precio de Operación</label>
+          <input id="precioOperacion" type="number" class="form-control" formControlName="precioOperacion">
+        </div> -->
+        <div class="col-md-6 mb-3">
+          <label for="seniaOperacion">Seña de Operación</label>
+          <input id="seniaOperacion" type="number" class="form-control" formControlName="seniaOperacion">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="entregaOperacion">Entrega de Operación</label>
+          <input id="entregaOperacion" type="number" class="form-control" formControlName="entregaOperacion">
+        </div>
+      
+        <div class="col-md-6 mb-3">
+          <label for="otrasEntOperacion">Otras Entregas de Operación</label>
+          <input id="otrasEntOperacion" type="number" class="form-control" formControlName="otrasEntOperacion">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="observacionOperacion">Observación de Operación</label>
+          <input id="observacionOperacion" type="text" class="form-control" formControlName="observacionOperacion">
+        </div>
+     
+        
+      </div>
+  
+      <div class="row">
+        <h5 class="section-title">FORMA DE PAGO</h5>
+        <div class="col-md-6 mb-3 mt-3">
+          <h6>Subtotal: {{subtotal | currency}}</h6>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="cuotas">Cantidad de Cuotas</label>
+          <div class="col-md-3">
+            <select class="form-control" formControlName="cuotas" id="cuotas">
+              <option value="1">1</option>
+              <option value="3">3</option>
+              <option value="6">6</option>
+              <option value="12">12</option>
+              <option value="18">18</option>
+              <option value="24">24</option>
+            </select>
+          </div>
+          
+          <div class="col-md-6 mb-3 mt-3">
+
+            <h6 for="valorCuota">Valor de Cuota: {{ valorCuota() | currency }} </h6>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="diaVencimientoCuota">Día de Vencimiento de cada cuota:</label>
+            <select id="diaVencimientoCuota" class="form-control" formControlName="diaVencimientoCuota">
+              <option value="" disabled selected>Seleccione un día</option>
+              <option *ngFor="let dia of dias" [value]="dia">{{dia}}</option>
+            </select>
+          </div>
+        </div>
+      
+        <div  class="row" >
+        
+          <div class="col-md-4 mb-3">
+            <label for="diaInicioCuota">Día Inicio:</label>
+            
+            <input id="diaInicioCuota" type="number" class="form-control" formControlName="diaInicioCuota" readonly >
+          </div>
+        
+          <div class="col-md-4 mb-3">
+            <label for="mesInicioCuota">Mes Inicio de Cuota</label>
+            <select id="mesInicioCuota" class="form-control" formControlName="mesInicioCuota">
+              <option value="" disabled selected>Seleccione un mes</option>
+              <option *ngFor="let mes of meses" [value]="mes">{{mes}}</option>
+            </select>
+          </div>
+        
+          <div class="col-md-4 mb-3">
+            <label for="anioInicioCuota">Año Inicio de Cuota</label>
+            <select id="anioInicioCuota" class="form-control" formControlName="anioInicioCuota">
+              <option value="" disabled selected>Seleccione un año</option>
+              <option *ngFor="let anio of years" [value]="anio">{{anio}}</option>
+            </select>
+          </div>
+        
+          <div class="col-md-4 mb-3">
+            <label for="diaFinalCuota">Día Final de Cuota</label>
+            <input id="diaFinalCuota" type="number" class="form-control" formControlName="diaFinalCuota" readonly>
+          </div>
+        
+          <div class="col-md-4 mb-3">
+            <label for="mesFinalCuota">Mes Final de Cuota</label>
+            <select id="mesFinalCuota" class="form-control" formControlName="mesFinalCuota">
+              <option value="" disabled selected>Seleccione un mes</option>
+              <option *ngFor="let mes of meses" [value]="mes">{{mes}}</option>
+            </select>
+          </div>
+        
+          <div class="col-md-4 mb-3">
+            <label for="anioFinalCuota">Año Final de Cuota</label>
+            <select id="anioFinalCuota" class="form-control" formControlName="anioFinalCuota">
+              <option value="" disabled selected>Seleccione un año</option>
+              <option *ngFor="let anio of years" [value]="anio">{{anio}}</option>
+            </select>
+          </div>
+        
+        
+         
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="lugarPago">Lugar de Pago</label>
+          <input id="lugarPago" type="text" class="form-control" formControlName="lugarPago">
+        </div>
+       
+      </div>
+  
+      <h5 class="section-title">GESTORIA</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="gastosPap">Gastos Papelería</label>
+          <input id="gastosPap" type="number" class="form-control" formControlName="gastosPap">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="prenda">Prenda</label>
+          <input id="prenda" type="number" class="form-control" formControlName="prenda">
+        </div>
+      
+        <div class="col-md-6 mb-3">
+          <label for="inscripcion">Inscripción</label>
+          <input id="inscripcion" type="number" class="form-control" formControlName="inscripcion">
+        </div>
+      
+        <div class="col-md-6 mb-3">
+          <label for="pagoTrue">Pago?</label>
+          <select id="pagoTrue" type="select" class="form-control" formControlName="pago">
+          <option value="SI">Si</option>
+          <option value="NO">No</option>
+          </select>
+        </div>
+      </div>
+  
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label for="conceptoFinal">Concepto Final</label>
+          <textarea id="conceptoFinal" class="form-control" formControlName="conceptoFinal"></textarea>
+        </div>
+      </div>
+  
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary" >Guardar</button>
+          
+        </div>
+  
+        <button  class="btn btn-primary" (click)="fillFormWithRandomData()" >rellenar</button>
+      </div>
+    </div>
+  </form>
+  

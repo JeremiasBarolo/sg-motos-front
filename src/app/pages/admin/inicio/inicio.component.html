@@ -1,0 +1,142 @@
+<div class="header-container">
+    <h3>Bienvenido {{titulo}}!</h3>
+</div>
+
+<div *ngIf="isAdmin">
+  <div   class="row row-cols-1 row-cols-lg-2 row-cols-xxl-4">
+    <app-inicio-card
+    [titulo]="'Total Recaudado'"
+    [descripcion]="recaudacionTotal"
+    [color]="'success'"
+    [icono]="'wallet-outline'"
+    [url]="'admin/historial-clientes'"
+    [tooltip]="'Redirigir a Historial de Clientes'"
+    [useCurrencyPipe]="true"
+    ></app-inicio-card>
+    
+    <app-inicio-card
+    [titulo]="'Ventas Totales'"
+    [descripcion]="ventasTotal"
+    [icono]="'card-outline'"
+    [color]="'info'"
+    [url]="'admin/historial-clientes'"
+    [tooltip]="'Redirigir a Historial de Clientes'"
+    ></app-inicio-card>
+
+    <app-inicio-card
+    
+    [titulo]="'Pedidos Pendientes'"
+    [descripcion]="pedidosPendientes"
+    [icono]="'cube-outline'"
+    [color]="'danger'"
+    [url]="'admin/pedidos-stock'"
+    [tooltip]="'Redirigir a Pedidos de Stock'"
+    ></app-inicio-card>
+
+    <app-inicio-card
+    
+    [titulo]="'Tareas Pendientes'"
+    [descripcion]="tareas"
+    [icono]="'archive-outline'"
+    [color]="'purple'"
+    [url]="'admin/tareas'"
+    [tooltip]="'Redirigir a Tareas Disponibles'"
+    ></app-inicio-card>
+
+    
+
+    
+
+    
+</div>
+
+<div class="row row-cols-1 row-cols-lg-3">
+  
+    <div class="col">
+      <div class="card radius-10 w-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <h6 class="mb-0">Mejores Empleados</h6>
+           
+          </div>
+          <div class="countries-list" *ngFor="let empleado of empleados">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="ms-auto widget-icon-small text-white bg-gradient-purple">
+                <ion-icon name="person-circle-outline"></ion-icon>
+              </div>
+              <div class="country-name flex-grow-1">
+                <h5 class="mb-0">{{empleado.nombre}}</h5>
+                <p class="mb-0 text-secondary">{{empleado.Localidad}}</p>
+              </div>
+              <div class="">
+                <p class="mb-0 text-success d-flex gap-1 align-items-center fw-500"><span>{{empleado.ventas}}</span></p>
+              </div>
+            </div>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+   
+
+    <div class="col">
+      <div class="card radius-10 w-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <h6 class="mb-0">Nuestros Mejores Clientes</h6>
+           
+          </div>
+          <div class="countries-list" *ngFor="let cliente of clientes">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="ms-auto widget-icon-small text-white bg-gradient-warning">
+                <ion-icon name="people-outline" width="35"></ion-icon>
+              </div>
+              
+              <div class="country-name flex-grow-1">
+                <h5 class="mb-0">{{cliente.nombre}}</h5>
+                <p class="mb-0 text-secondary">{{cliente.Localidad}}</p>
+              </div>
+              <div class="">
+                <p class="mb-0 text-success d-flex gap-1 align-items-center fw-500"><span>{{cliente.ventas}}</span></p>
+              </div>
+            </div>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card radius-10 w-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <h6 class="mb-0">Rendimineto de Ventas</h6>
+          </div>
+          <app-bar-chart></app-bar-chart>
+        </div>  
+      </div>
+    </div>
+  </div>
+
+  
+</div>
+<div class="row row-cols-1 row-cols-lg-12">
+  <app-tareas-admin  
+  *ngIf="isAdmin == false"
+  [tareas] = "tareas"
+  (modalOpenClick)="modalOpen($event)"
+  ></app-tareas-admin>
+</div>
+
+<p-dialog header="{{cardData?.titulo}}" [modal]="true" [(visible)]="modalData" [style]="{ width: '40vw' }" *ngIf="isAdmin == false" >
+  <div class="p-fluid" >
+      <div class="p-grid">
+          <div class="p-col-12 p-md-6">
+              <div class="field">
+                  
+                  <span id="modelo"> {{ cardData?.descripcion }} </span>
+              </div>
+          </div>
+      </div>
+  </div>
+</p-dialog>

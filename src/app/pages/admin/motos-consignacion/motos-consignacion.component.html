@@ -1,0 +1,150 @@
+<div class="header-container">
+    <h3>Listado de Motos En Consignacion</h3>
+    <p-button  *ngIf="isAdmin" icon="pi pi-plus" label="Agregar Moto" [text]="true" (click)="crearVisible = true" styleClass="ml-auto"></p-button>
+</div>
+
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    (editarClick)="editarItem($event)" 
+    (eliminarClick)="eliminarItem($event)"
+></app-tablang>
+
+<!-- <============================================ CREAR ==================================================> -->
+<p-dialog header="Crear Moto" [modal]="true" [(visible)]="crearVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="marcaId" class="font-semibold w-6rem"><strong> Marca </strong></label>
+            <br>
+            <select id="marcaId" class="flex-auto" formControlName="marcaId">
+                <option *ngFor="let marca of marcas" [value]="marca.id">{{marca.descripcion}} </option>
+            </select>
+        </div>
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="modelo" class="font-semibold w-6rem"><strong>Modelo</strong></label>
+            <br>
+            <input id="modelo" class="flex-auto" formControlName="modelo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="year" class="font-semibold w-6rem"><strong>Año</strong></label>
+            <br>
+            <input id="year" class="flex-auto" type="number"  formControlName="year" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="num_motor" class="font-semibold w-6rem"><strong>Numero de Motor</strong></label>
+            <br>
+            <input id="num_motor" type="password" type="number" class="flex-auto" formControlName="num_motor" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="num_cuadro" class="font-semibold w-6rem"><strong>Numero de Cuadro</strong></label>
+            <br>
+            <input id="num_cuadro" class="flex-auto" type="number" formControlName="num_cuadro" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="cilindrada" class="font-semibold w-6rem"><strong>Cilindrada</strong></label>
+            <br>
+            <input id="cilindrada" class="flex-auto"  formControlName="cilindrada" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="cert_num_fabrica" class="font-semibold w-6rem"><strong>Cert. Num. de Fabrica</strong></label>
+            <br>
+            <input id="cert_num_fabrica" class="flex-auto" type="number" formControlName="cert_num_fabrica" />
+        </div>
+
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="precio" class="font-semibold w-6rem"><strong>Precio</strong></label>
+            <br>
+            <input id="precio" type="number" class="flex-auto" formControlName="precio" />
+        </div>
+
+        
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ EDITAR ==================================================> -->
+<p-dialog header="Editar Moto" [modal]="true" [(visible)]="editVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="marcaId" class="font-semibold w-6rem"><strong> Marca </strong></label>
+            <br>
+            <select id="marcaId" class="flex-auto" formControlName="marcaId">
+                <option *ngFor="let marca of marcas" [value]="marca.id">{{marca.descripcion}} </option>
+            </select>
+        </div>
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="modelo" class="font-semibold w-6rem"><strong>Modelo</strong></label>
+            <br>
+            <input id="modelo" class="flex-auto" formControlName="modelo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="year" class="font-semibold w-6rem"><strong>Año</strong></label>
+            <br>
+            <input id="year" class="flex-auto" type="number"  formControlName="year" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="num_motor" class="font-semibold w-6rem"><strong>Numero de Motor</strong></label>
+            <br>
+            <input id="num_motor" type="password" type="number" class="flex-auto" formControlName="num_motor" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="num_cuadro" class="font-semibold w-6rem"><strong>Numero de Cuadro</strong></label>
+            <br>
+            <input id="num_cuadro" class="flex-auto" type="number" formControlName="num_cuadro" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="cilindrada" class="font-semibold w-6rem"><strong>Cilindrada</strong></label>
+            <br>
+            <input id="cilindrada" class="flex-auto"  formControlName="cilindrada" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="cert_num_fabrica" class="font-semibold w-6rem"><strong>Cert. Num. de Fabrica</strong></label>
+            <br>
+            <input id="cert_num_fabrica" class="flex-auto" type="number" formControlName="cert_num_fabrica" />
+        </div>
+
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="precio" class="font-semibold w-6rem"><strong>Precio</strong></label>
+            <br>
+            <input id="precio" type="number" class="flex-auto" formControlName="precio" />
+        </div>
+
+        
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ ELIMINAR ==================================================> -->
+<p-dialog header="Eliminar Moto" [modal]="true" [(visible)]="editEliminar" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Desea usted eliminar este objeto?</span>
+    <br>
+    <br>
+    <div class="flex justify-content-end gap-2">
+        <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="Eliminar()" />
+        <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editEliminar = false" />
+    </div>
+</p-dialog>

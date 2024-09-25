@@ -1,0 +1,71 @@
+<h1>Gestion de Insumos para {{cardData?.DatosServicio?.modelo}}</h1>
+
+<div class="container">
+  <div class="card mb-3 border border-0 mx-auto">
+    <div class="row mt-4 ml-3">
+      <div class="col-md-6 text-center">
+        <h6>Articulos Disponibles</h6>
+        <div class="card" style="height: 550px; overflow-y: auto; margin-left: 6vw;">
+          <div class="card-body">
+            <ul class="list-group" *ngFor="let entity of options">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ entity.nombre }}
+                <button class="btn btn-success" (click)="selectedEntity(entity)">Agregar Insumo</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de Insumos Seleccionados -->
+      <div class="col-md-5 text-center">
+        <h6>Artículos Seleccionados</h6>
+        <div class="spacer">
+          <div class="container">
+            <div class="row mt-5">
+              <div class="col-lg-12">
+                <div class="row shop-listing">
+                  <p-table [value]="selectedEntities" [paginator]="true" [rows]="10" [responsive]="true" [styleClass]="'table shop-table'">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Costo</th>
+                        <th>Cantidad</th>
+                        <th></th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item let-i="rowIndex">
+                      <tr>
+                        <td>{{ item.nombre }}</td>
+                        <td>{{ item.costo | currency }}</td>
+                        <td>
+                          <button type="button" class="btn btn-primary" (click)="incrementQuantity(item)">+</button>
+                          {{ item.cantidad || 0 }}
+                          <button type="button" class="btn btn-primary" (click)="decrementQuantity(item)">-</button>
+                        </td>
+                        <td>
+                          <button type="button" pButton icon="pi pi-trash" class="btn btn-danger btn-sm" (click)="returnEntities(item)"></button>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-6 offset-md-3 text-center">
+          <button routerLinkActive="router-link-active" type="submit" (click)="onSubmit()" class="btn btn-success">Aceptar</button>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-6 offset-md-3 text-center mb-3">
+          <button [routerLink]="['/admin/service']" type="button" class="btn btn-info">Volver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

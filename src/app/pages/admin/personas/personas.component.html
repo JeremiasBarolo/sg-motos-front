@@ -1,0 +1,242 @@
+<div class="header-container">
+    <h3>Listado de Personas</h3>
+    <p-button icon="pi pi-plus" label="Agregar Persona" [text]="true" (click)="crearVisible = true" styleClass="ml-auto"></p-button>
+</div>
+
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    (modalOpenClick)="modalOpen($event)"
+    (editarClick)="editarItem($event)" 
+    (eliminarClick)="eliminarItem($event)"
+></app-tablang>
+
+<!-- <============================================ CREAR ==================================================> -->
+<p-dialog header="Crear Persona" [modal]="true" [(visible)]="crearVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="nombre" class="font-semibold w-6rem"><strong>Nombre</strong></label>
+            <br>
+            <input id="nombre" class="flex-auto" formControlName="nombre" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="apellido" class="font-semibold w-6rem"><strong>Apellido</strong></label>
+            <br>
+            <input id="apellido" class="flex-auto" formControlName="apellido" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="dni" class="font-semibold w-6rem"><strong>DNI</strong></label>
+            <br>
+            <input id="dni" type="password" type="number" class="flex-auto" formControlName="dni" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="cuit" class="font-semibold w-6rem"><strong>CUIT</strong></label>
+            <br>
+            <input id="cuit" class="flex-auto" type="number" formControlName="cuit" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="direccion" class="font-semibold w-6rem"><strong>Direccion</strong></label>
+            <br>
+            <input id="direccion" class="flex-auto"  formControlName="direccion" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="nro_direccion" class="font-semibold w-6rem"><strong>Numero de Direccion</strong></label>
+            <br>
+            <input id="nro_direccion" class="flex-auto" type="number" formControlName="nro_direccion" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="localidadId" class="font-semibold w-6rem"><strong> Localidad</strong></label>
+            <br>
+            <select id="localidadId" class="flex-auto" formControlName="localidadId">
+                <option *ngFor="let rol of roles" [value]="rol.id">{{rol.descripcion}} </option>
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="telefono" class="font-semibold w-6rem"><strong>Telefono</strong></label>
+            <br>
+            <input id="telefono" class="flex-auto" type="number" formControlName="telefono" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="mail" class="font-semibold w-6rem"><strong>Correo Electronico</strong></label>
+            <br>
+            <input id="mail" class="flex-auto" type="email" formControlName="mail" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="fecha_nacimiento" class="font-semibold w-6rem"><strong>Fecha de Nacimineto</strong></label>
+            <br>
+            <input id="fecha_nacimiento" type="date" class="flex-auto" formControlName="fecha_nacimiento" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="tipoPersonaId" class="font-semibold w-6rem"><strong>Tipo Persona</strong></label>
+            <br>
+            <select id="tipoPersonaId" class="flex-auto" formControlName="tipoPersonaId">
+              <option *ngFor="let tipoPersona of tipoPersonas" [value]="tipoPersona.id">{{tipoPersona.descripcion}} </option>
+            </select>
+        </div>
+
+        
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="crearVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ EDITAR ==================================================> -->
+<p-dialog header="Editar Persona" [modal]="true" [(visible)]="editVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="nombre" class="font-semibold w-6rem"><strong>Nombre</strong></label>
+            <br>
+            <input id="nombre" class="flex-auto" formControlName="nombre" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="apellido" class="font-semibold w-6rem"><strong>Apellido</strong></label>
+            <br>
+            <input id="apellido" class="flex-auto" formControlName="apellido" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="dni" class="font-semibold w-6rem"><strong>DNI</strong></label>
+            <br>
+            <input id="dni" type="password" type="number" class="flex-auto" formControlName="dni" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="cuit" class="font-semibold w-6rem"><strong>CUIT</strong></label>
+            <br>
+            <input id="cuit" class="flex-auto" type="number" formControlName="cuit" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="direccion" class="font-semibold w-6rem"><strong>Direccion</strong></label>
+            <br>
+            <input id="direccion" class="flex-auto"  formControlName="direccion" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="nro_direccion" class="font-semibold w-6rem"><strong>Numero de Direccion</strong></label>
+            <br>
+            <input id="nro_direccion" class="flex-auto" type="number" formControlName="nro_direccion" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="localidadId" class="font-semibold w-6rem"><strong> Localidad</strong></label>
+            <br>
+            <select id="localidadId" class="flex-auto" formControlName="localidadId">
+                <option *ngFor="let rol of roles" [value]="rol.id">{{rol.descripcion}} </option>
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="telefono" class="font-semibold w-6rem"><strong>Telefono</strong></label>
+            <br>
+            <input id="telefono" class="flex-auto" type="number" formControlName="telefono" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="mail" class="font-semibold w-6rem"><strong>Correo Electronico</strong></label>
+            <br>
+            <input id="mail" class="flex-auto" type="email" formControlName="mail" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="fecha_nacimiento" class="font-semibold w-6rem"><strong>Fecha de Nacimineto</strong></label>
+            <br>
+            <input id="fecha_nacimiento" type="date" class="flex-auto" formControlName="fecha_nacimiento" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="tipoPersonaId" class="font-semibold w-6rem"><strong>Tipo Persona</strong></label>
+            <br>
+            <select id="tipoPersonaId" class="flex-auto" formControlName="tipoPersonaId">
+              <option *ngFor="let tipoPersona of tipoPersonas" [value]="tipoPersona.id">{{tipoPersona.descripcion}} </option>
+            </select>
+        </div>
+
+        
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="crearVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ ELIMINAR ==================================================> -->
+<p-dialog header="Eliminar Persona" [modal]="true" [(visible)]="editEliminar" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Desea usted eliminar este objeto?</span>
+    <br>
+    <br>
+    <div class="flex justify-content-end gap-2">
+        <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="Eliminar()" />
+        <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editEliminar = false" />
+    </div>
+</p-dialog>
+
+<p-dialog header="Datos de Persona" [modal]="true" [(visible)]="modalData" [style]="{ width: '40vw' }">
+    <div class="p-fluid">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="modelo"><strong>Nombre:</strong></label>
+                    <span id="modelo"> {{ cardData?.nombre }} {{ cardData?.apellido }}</span>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="patente"><strong>CUIT:</strong></label>
+                    <span id="patente"> {{ cardData?.cuit }}</span>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="num_motor"><strong>DNI:</strong></label>
+                    <span id="num_motor"> {{ cardData?.dni }}</span>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="color"><strong>Fecha de Nacimiento:</strong></label>
+                    <span id="color"> {{ cardData?.fecha_nacimientoFormatted }}</span>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="kilometros"><strong>Telefono:</strong></label>
+                    <span id="kilometros"> {{ cardData?.telefono }}</span>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="estado_general"><strong>Direccion:</strong></label>
+                    <span id="estado_general"> {{ cardData?.direccionCompleta }}</span>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="field">
+                    <label for="observaciones"><strong>Correo Electronico:</strong></label>
+                    <span id="observaciones"> {{ cardData?.mail }}</span>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</p-dialog>

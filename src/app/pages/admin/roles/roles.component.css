@@ -1,0 +1,7 @@
+.pi-info-circle {
+    margin-left: 0.5rem; /* Espacio entre el título y el ícono */
+    cursor: pointer;
+}
+.ml-auto {
+    margin-left: auto;
+  }

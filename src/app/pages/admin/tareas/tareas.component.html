@@ -1,0 +1,124 @@
+<div class="header-container">
+    <h3>Tareas Pendientes</h3>
+    <p-button  icon="pi pi-plus" label="Asignar Tarea" [text]="true" (click)="crearVisible = true" styleClass="ml-auto"></p-button>
+</div>
+<p-dropdown 
+      [options]="empleadoChoice" 
+      optionLabel="name" 
+      placeholder="Seleccionar Empleado"
+      (onChange)="onClientChange($event)">
+</p-dropdown>
+<br>
+<br>
+<app-tablang
+    [data]="products"
+    [columns]="columns"
+    (editarClick)="editarItem($event)" 
+    (eliminarClick)="eliminarItem($event)"
+></app-tablang>
+
+
+
+<!-- <============================================ CREAR ==================================================> -->
+<p-dialog header="Asignar Tarea" [modal]="true" [(visible)]="crearVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="titulo" class="font-semibold w-6rem"><strong>Titulo</strong></label>
+            <br>
+            <input id="titulo" class="flex-auto" formControlName="titulo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="descripcion"class="font-semibold w-6rem"><strong>Descripcion</strong></label>
+            <br>
+            <input id="descripcion" class="flex-auto" formControlName="descripcion"/>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="usuarioId" class="font-semibold w-6rem"><strong>Usuario/Empleado</strong></label>
+            <br>
+            <select id="usuarioId" class="flex-auto" formControlName="usuarioId">
+              <option *ngFor="let empleado of empleados" [value]="empleado.id">{{empleado.name}} {{empleado.lastname}}</option>
+              
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="color" class="font-semibold w-6rem"><strong>Prioridad</strong></label>
+            <br>
+            <select id="color" class="flex-auto" formControlName="color">
+              <option *ngFor="let color of colores" [value]="color.color">{{color.prioridad}}</option>
+              
+            </select>
+        </div>
+
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="crearVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ EDITAR ==================================================> -->
+<p-dialog header="Editar Tarea" [modal]="true" [(visible)]="editVisible" [style]="{ width: '25rem' }">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="titulo" class="font-semibold w-6rem"><strong>Titulo</strong></label>
+            <br>
+            <input id="titulo" class="flex-auto" formControlName="titulo" />
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="descripcion"class="font-semibold w-6rem"><strong>Descripcion</strong></label>
+            <br>
+            <input id="descripcion" class="flex-auto" formControlName="descripcion"/>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="usuarioId" class="font-semibold w-6rem"><strong>Empleado</strong></label>
+            <br>
+            <select id="usuarioId" class="flex-auto" formControlName="usuarioId">
+              <option *ngFor="let empleado of empleados" [value]="empleado.id">{{empleado.name}} {{empleado.lastname}}</option>
+              
+            </select>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="color" class="font-semibold w-6rem"><strong>Prioridad</strong></label>
+            <br>
+            <select id="color" class="flex-auto" formControlName="color">
+              <option *ngFor="let color of colores" [value]="color.color">{{color.prioridad}}</option>
+              
+            </select>
+        </div>
+
+        
+        <div class="flex justify-content-end gap-2">
+            <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="onSubmit()" />
+            <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="crearVisible = false" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <============================================ ELIMINAR ==================================================> -->
+<p-dialog header="Eliminar Tarea" [modal]="true" [(visible)]="editEliminar" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Desea usted eliminar este objeto?</span>
+    <br>
+    <br>
+    <div class="flex justify-content-end gap-2">
+        <p-button class="mr-1" icon="pi pi-check"  [text]="true" severity="success" (click)="Eliminar()" />
+        <p-button icon="pi pi-times"  [text]="true" severity="danger" (click)="editEliminar = false" />
+    </div>
+</p-dialog>
+
+
+<p-dialog header="Tareas" [(visible)]="showTable" [modal]="true" [style]="{width: '75vw'}">
+    <app-tablang
+      [data]="empleadoTareas"
+      [columns]="columns"
+      [accionesVisible]="false"
+    ></app-tablang>
+</p-dialog>

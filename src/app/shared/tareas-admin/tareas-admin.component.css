@@ -1,0 +1,61 @@
+.tareas-card {
+    width: 90%; /* Aumenta el ancho según tus necesidades */
+    max-width: 1200px; /* Establece un ancho máximo para evitar que sea demasiado grande en pantallas grandes */
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  
+  .estado {
+    padding: 10px 20px; /* Ajusta el relleno según tus necesidades */
+    border-radius: 12px;
+    color: #fff;
+  }
+  
+  .badge-pendiente {
+    background-color: #f0ad4e;
+  }
+  
+  .badge-proceso {
+    background-color: #5bc0de;
+  }
+  
+  .badge-completada {
+    background-color: #5cb85c;
+  }
+  
+  .ion-icon {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  .ion-icon[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  
+
+  .color-box {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 50%;
+  }
+  
+  .color-amarillo {
+    background-color: #f0ad4e;
+  }
+  
+  .color-rojo {
+    background-color: #e4240a;
+  }
+  
+  .color-verde {
+    background-color: #5cb85c;
+  }

@@ -1,0 +1,14 @@
+.hover-icon ion-icon {
+    transition: transform 0.3s, color 0.3s;
+    color: inherit; /* Hereda el color del contenedor */
+  }
+  
+  /* Efecto de hover */
+  .hover-icon:hover ion-icon {
+    transform: scale(1.2); /* Escala el icono un 20% más grande */
+    color: #007bff; /* Cambia el color del icono al pasar el cursor */
+  }
+
+.card-body{
+  background-color: #323232;
+}
