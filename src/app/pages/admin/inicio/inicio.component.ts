@@ -31,6 +31,8 @@ export class InicioComponent implements OnInit, OnDestroy {
 
 
   private destroy$ = new Subject<void>();
+  isloggedIn: boolean = false
+ 
 
   constructor(
     private authService: AuthService,
@@ -44,6 +46,8 @@ export class InicioComponent implements OnInit, OnDestroy {
     
   }
   ngOnInit(): void {
+    this.isloggedIn = this.authService.isLoggedIn()
+   
     this.isAdmin = this.authService.isAllowed();
     this.authService.getUserData().subscribe((data: any) => {
       if(data.nombre === 'Admin Admin'){

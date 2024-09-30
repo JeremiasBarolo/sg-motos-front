@@ -7,9 +7,7 @@ $(document).ready(function() {
 
 
 
-  $(function() {
-		$("#menu").metisMenu()
-	})
+
 
 
   $(".nav-toggle-icon").on("click", function() {
@@ -174,13 +172,6 @@ function theme8() {
 
 
 
-  // new PerfectScrollbar(".header-notifications-list")
-
-
-  //   // Tooltops
-  //   $(function () {
-  //     $('[data-bs-toggle="tooltip"]').tooltip();
-  //   })
 
 
   
