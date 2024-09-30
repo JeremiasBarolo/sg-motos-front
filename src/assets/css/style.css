@@ -948,7 +948,7 @@ ion-icon {
 }
 
 .profile-cover {
-    background-image: url(../images/cards/profile-cover.png);
+    
     background-size: cover;
     height: 10rem;
     background-position: center;
@@ -1331,30 +1331,7 @@ ul.categories-list li {
 }
 
 
-.login-cover-img {
-    background-image: url(../images/authentication/au-sign-up-basic.png);
-    background-position: center;
-    background-size: cover;
-    width: 100%;
-    transform: skewX(-10deg);
-}
 
-
-.register-cover-img {
-    background-image: url(../images/authentication/register-cover-img.png);
-    background-position: center;
-    background-size: cover;
-    width: 100%;
-    transform: skewX(-10deg);
-}
-
-.au-reset-password-cover {
-    background-image: url(../images/authentication/au-reset-password-cover.png);
-    background-position: center;
-    background-size: cover;
-    width: 100%;
-    transform: skewX(-10deg);
-}
 
 
 .reset-passowrd {
@@ -1370,23 +1347,7 @@ ul.categories-list li {
     margin-top: 12rem;
 }
 
-.au-sign-up-basic {
-    background-image: url(../images/authentication/au-sign-up-basic.png);
-    background-position: center;
-    background-size: cover;
-}
 
-.au-sign-in-basic {
-    background-image: url(../images/authentication/au-sign-in-basic.png);
-    background-position: center;
-    background-size: cover;
-}
-
-.au-reset-password-basic {
-    background-image: url(../images/authentication/au-reset-password-cover.png);
-    background-position: center;
-    background-size: cover;
-}
 
 
 
