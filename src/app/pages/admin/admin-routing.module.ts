@@ -51,7 +51,6 @@ const routes: Routes = [
     canActivate: [AdminGuard], 
     
     children: [
-      { path: 'admin', component: AdminComponent },
       { path: 'tipo-articulo', component: TipoArticuloComponent },
       { path: 'tipo-personas', component: TipoPersonaComponent },
       { path: 'localidades', component: LocalidadesComponent },
@@ -84,8 +83,8 @@ const routes: Routes = [
       { path: 'asignar-insumos/:id', component: AsignarInsumosComponent },
       { path: 'asignar-insumos/editar/:id', component: AsignarInsumosComponent },
       { path: 'tareas', component: TareasComponent },
-      { path: 'inicio', component: InicioComponent, canActivate: [AdminGuard],  },
-      { path: '**', redirectTo: 'inicio' }, 
+      { path: 'inicio', component: InicioComponent  },
+      { path: '**', redirectTo: '/login' }, 
     ]
   },
   

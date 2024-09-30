@@ -26,17 +26,7 @@ export class LoginComponent implements OnInit {
     });
    }
   ngOnInit(): void {
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-    
-        const isLoginPage = event.url.includes('login');
-        const isRootPage = event.url === '' || event.url === '/';
-        if(isLoginPage || isRootPage){
-          this.router.navigate(['login'])
-        }
-       
-      }
-    });
+   
   }
 
   login(): void {
@@ -47,15 +37,11 @@ export class LoginComponent implements OnInit {
       (data) => {
         localStorage.setItem('token', data.token);
         if (this.authService.isAdmin()) {
-          this.router.navigate(['/admin/inicio']);
-          setTimeout(() => {
-            window.location.reload();
-          }, 1100);
+          this.router.navigate(['admin/inicio']);
+      
         } else {
           this.router.navigate(['/empleados']);
-          setTimeout(() => {
-            window.location.reload();
-          }, 1100);
+          
         }
 
         this.messageService.add({

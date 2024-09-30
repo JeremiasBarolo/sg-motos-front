@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
@@ -36,9 +36,26 @@ export class HeaderComponent implements OnInit {
     this.destroy$.complete();
   }
 
+  showDropdown: boolean = false;
+
+  toggleDropdown(event: MouseEvent): void {
+    event.preventDefault(); // Evita que el enlace recargue la página
+    this.showDropdown = !this.showDropdown;
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeDropdown(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-user-setting')) {
+      this.showDropdown = false; // Cerrar el menú si se hace clic fuera
+    }
+  }
+
 
   logout(){
     this.authService.logout();
     this.router.navigate(['/login']);
   }
 }
+
+
