@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
+import { SidebarService } from '../../services/sidebar.service';
 
 @Component({
   selector: 'app-header',
@@ -9,14 +10,15 @@ import { Router } from '@angular/router';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit {
-
+  isSidebarCollapsed = false;
   nombre: any
   rol:any
   private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private sidebarService: SidebarService
   ) { }
 
 
@@ -36,26 +38,7 @@ export class HeaderComponent implements OnInit {
     this.destroy$.complete();
   }
 
-  showDropdown: boolean = false;
-
-  toggleDropdown(event: MouseEvent): void {
-    event.preventDefault(); // Evita que el enlace recargue la página
-    this.showDropdown = !this.showDropdown;
-  }
-
-  @HostListener('document:click', ['$event'])
-  closeDropdown(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-user-setting')) {
-      this.showDropdown = false; // Cerrar el menú si se hace clic fuera
-    }
-  }
-
-
-  logout(){
-    this.authService.logout();
-    this.router.navigate(['/login']);
-  }
+  
 }
 
 

@@ -15,3 +15,90 @@ li, a {
     width: auto;
     height: auto;
   }
+
+  .sidebar-wrapper.collapsed {
+    width: 60px; /* Cambia el tamaño de la sidebar colapsada */
+  }
+  
+  .sidebar-wrapper {
+    width: 250px; /* Tamaño de la sidebar expandida */
+    transition: width 0.3s;
+  }
+
+  .sidebar-wrapper {
+    width: 250px; /* Ancho expandido */
+    transition: width 0.3s;
+}
+
+.collapsed .sidebar-wrapper {
+    width: 60px; /* Ancho colapsado */
+}
+
+.collapsed .top-header .logo-icon,
+.collapsed .top-header .logo-text {
+    display: none; /* Oculta el logo y el texto en el header cuando está colapsado */
+}
+
+.top-header {
+  background-color: #f8f9fa; /* Color de fondo */
+  padding: 10px; /* Espaciado interno */
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+}
+
+.searchbar {
+  position: relative;
+  flex-grow: 1; /* Para ocupar el espacio disponible */
+  margin: 0 15px; /* Espaciado lateral */
+}
+
+.search-icon, .search-close-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.search-icon {
+  left: 10px; /* Ajustar según sea necesario */
+}
+
+.search-close-icon {
+  right: 10px; /* Ajustar según sea necesario */
+  display: none; /* Ocultar por defecto */
+}
+
+.navbar-nav {
+  list-style: none; /* Eliminar viñetas */
+  display: flex; /* Mostrar en fila */
+  margin: 0; /* Sin margen */
+  padding: 0; /* Sin padding */
+}
+
+.nav-item {
+  position: relative; /* Necesario para el dropdown */
+}
+
+.dropdown-menu {
+  display: none; /* Ocultar por defecto */
+  position: absolute; /* Para que se posicione en relación al contenedor */
+  z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+  margin-top: 40px; /* Espacio entre el botón y el menú */
+  background-color: white; /* Color de fondo del menú */
+  border-radius: 4px; /* Bordes redondeados */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra para profundidad */
+}
+
+.dropdown-menu.show {
+  display: block; /* Mostrar el menú cuando está activo */
+  margin-right: 180px;
+  margin-top: 188px;
+
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #e0e0e0; /* Color del divisor */
+}

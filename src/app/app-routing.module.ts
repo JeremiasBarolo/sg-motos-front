@@ -10,7 +10,7 @@ import { LoginComponent } from './auth/login/login.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'admin', pathMatch: 'full'},
+  { path: '', redirectTo: 'login', pathMatch: 'full'},
   {
     path: 'admin',
     loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule),
