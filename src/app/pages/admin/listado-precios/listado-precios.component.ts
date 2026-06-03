@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { MovimientosService } from '../../../services/movimientos.service';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 
 @Component({
   selector: 'app-listado-precios',
@@ -21,6 +22,10 @@ export class ListadoPreciosComponent implements OnInit, OnDestroy {
   searchText: string = '';
   private destroy$ = new Subject<void>();
   tipoArticulosChoice: any[] = [];
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   constructor(
     private movimientosService: MovimientosService,
@@ -35,35 +40,48 @@ export class ListadoPreciosComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.movimientosService.getListadoPrecios().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
-        { field: 'nombre', header: 'Nombre' },
-        { field: 'tipoArticulo', header: 'Tipo Articulo' },
-        { field: 'costo', header: 'Costo' },
-        { field: 'cantidad', header: 'Cantidad' }
-      ];
-
-      const tipoArticulosSet = new Set();
-
-      data.forEach(item => {
-        this.products.push({
-          id: item.id,
-          nombre: item.nombre,
-          tipoArticulo: item.tipo_articulo,
-          costo: item.costo,
-          cantidad: item.cantidad,
-          datos: item.datos
-        });
-
-        tipoArticulosSet.add(item.tipo_articulo);
-      });
-
-      this.filteredProducts = [...this.products];
-      this.tipoArticulosChoice = [{ tipo: 'Mostrar Todos' }, ...Array.from(tipoArticulosSet).map(tipo => ({ tipo }))];
-    });
+    this.columns = [
+      { field: 'nombre', header: 'Nombre' },
+      { field: 'tipoArticulo', header: 'Tipo Articulo' },
+      { field: 'costo', header: 'Costo' },
+      { field: 'cantidad', header: 'Cantidad' }
+    ];
+    this.loadPage({ page: 0, size: this.pageSize });
   }
 
-  searchClientMovements() {
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    const tipoArticulosSet = new Set<string>();
+    this.movimientosService
+      .getPageListadoPrecios(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (item) => {
+            tipoArticulosSet.add(item.tipo_articulo);
+            return {
+              id: item.id,
+              nombre: item.nombre,
+              tipoArticulo: item.tipo_articulo,
+              costo: item.costo,
+              cantidad: item.cantidad,
+              datos: item.datos
+            };
+          });
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.tipoArticulosChoice = [{ tipo: 'Mostrar Todos' }, ...Array.from(tipoArticulosSet).map(tipo => ({ tipo }))];
+          this.applyFilters();
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
+  }
+
+  applyFilters(): void {
     let filtered = this.products;
 
     if (this.selectedClient && this.selectedClient.tipo !== 'Mostrar Todos') {
@@ -78,6 +96,10 @@ export class ListadoPreciosComponent implements OnInit, OnDestroy {
     this.showTable = true;
   }
 
+  searchClientMovements() {
+    this.applyFilters();
+  }
+
   showClientDropdown() {
     this.showDropdownDialog = true;
   }
@@ -89,10 +111,7 @@ export class ListadoPreciosComponent implements OnInit, OnDestroy {
 
   onSearchTextChange() {
     if (this.searchText.trim() === '') {
-      this.filteredProducts = [...this.products];
-      if (this.selectedClient && this.selectedClient.tipo !== 'Mostrar Todos') {
-        this.filteredProducts = this.filteredProducts.filter(movement => movement.tipoArticulo === this.selectedClient.tipo);
-      }
+      this.applyFilters();
     } else {
       this.searchClientMovements();
     }

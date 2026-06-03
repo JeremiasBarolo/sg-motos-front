@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, tap } from 'rxjs';
 import { AuthService } from './auth.service';
+import { PaginatedResponse } from '../models/paginated-response';
+import { getPaginated } from '../utils/pagination-http.util';
 
 
 @Injectable({
@@ -32,6 +34,10 @@ export class StockService {
     return this.http.get<any[]>(`${this.apiUrl}`, { headers: this.getHeaders() }); 
   }
 
+  getPage(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, this.apiUrl, page, size, this.getHeaders());
+  }
+
   listAllStockCount(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/disponible`, { headers: this.getHeaders() }); 
   }
@@ -43,6 +49,10 @@ export class StockService {
 
   getAllInsumos(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/insumos`, { headers: this.getHeaders() }); 
+  }
+
+  getPageInsumos(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, `${this.apiUrl}/insumos`, page, size, this.getHeaders());
   }
 
   getAllStockVentaAccesorios(): Observable<any[]> {
@@ -57,8 +67,24 @@ export class StockService {
     return this.http.get<any[]>(`${this.apiUrl}/stock-general`, { headers: this.getHeaders() }); 
   }
 
+  getPageStockGeneral(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, `${this.apiUrl}/stock-general`, page, size, this.getHeaders());
+  }
+
   getAllServicios(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/servicios`, { headers: this.getHeaders() }); 
+  }
+
+  getPageServicios(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, `${this.apiUrl}/servicios`, page, size, this.getHeaders());
+  }
+
+  getPageVentaAccesorios(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, `${this.apiUrl}/venta-accesorios`, page, size, this.getHeaders());
+  }
+
+  getPageVentaRepuestos(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, `${this.apiUrl}/venta-respuestos`, page, size, this.getHeaders());
   }
 
   // get by id

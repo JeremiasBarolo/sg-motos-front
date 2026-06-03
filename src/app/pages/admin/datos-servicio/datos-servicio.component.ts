@@ -13,6 +13,7 @@ import { TipoServicioService } from '../../../services/tipo-servicio.service';
 import { ChecklistService } from '../../../services/checklist.service';
 import { AuthService } from '../../../services/auth.service';
 import { DateFormatterService } from '../../../services/date-formatter.service';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 
 @Component({
   selector: 'app-datos-servicio',
@@ -49,6 +50,10 @@ export class DatosServicioComponent implements OnInit, OnDestroy {
   selectedDate: any;
   fechasModal: boolean = false
   filteredProducts: any[] = []
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   constructor(
     private datosServicioService: DatosServicioService,
@@ -94,46 +99,18 @@ export class DatosServicioComponent implements OnInit, OnDestroy {
     })
 
 
-    this.movimientosService.getAllServices().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
-        { field: 'id', header: 'ID' },
-        { field: 'modelo', header: 'Modelo' },
-        { field: 'patente', header: 'Patente' },
-        { field: 'cliente', header: 'Cliente' },
-        { field: 'tipo_servicio', header: 'Tipo de Servicio' },
-        { field: 'Recepcionista', header: 'Recepcionista' },
-        { field: 'fecha_recepcion', header: 'Fecha de Recepcion' },
-        { field: 'fecha_est_entrega', header: 'Fecha Estimada de Entrega' },
-        { field: 'hora_est_entrega', header: 'Hora Estimada de Entrega' }
-      ];
-
-      this.products = data.map((item) => ({
-        id: item.id,
-        personaId: item.personaId,
-        usuarioId: item.usuarioId,
-        cliente: item.cliente,
-        modelo: item.DatosServicio.modelo,
-        num_motor: item.DatosServicio.num_motor,
-        num_chasis: item.DatosServicio.num_chasis,
-        patente: item.DatosServicio.patente,
-        color: item.DatosServicio.color,
-        tipo_servicio: item.TipoServicio,
-        tipoServicioId: item.tipoServicioId,
-        kilometros: item.DatosServicio.kilometros,
-        estado_general: item.DatosServicio.estado_general,
-        observaciones: item.DatosServicio.observaciones,
-        Recepcionista: item.Recepcionista,
-        fecha_recepcion: this.dateFormatterService.formatDateToDDMMYY(item.DatosServicio.fecha_recepcion),
-        fecha_est_entrega: this.dateFormatterService.formatDateToDDMMYY(item.DatosServicio.fecha_est_entrega),
-        hora_est_entrega: item.DatosServicio.hora_est_entrega,
-        recepcionistaId: item.DatosServicio.recepcionistaId,
-        DatosServicio: item.DatosServicio,
-        datosServicioId: item.datosServicioId,
-        Servicios: item.Servicios,
-        subtotal: item.subtotal,
-        checklist: item.checklist
-      }));
-    });
+    this.columns = [
+      { field: 'id', header: 'ID' },
+      { field: 'modelo', header: 'Modelo' },
+      { field: 'patente', header: 'Patente' },
+      { field: 'cliente', header: 'Cliente' },
+      { field: 'tipo_servicio', header: 'Tipo de Servicio' },
+      { field: 'Recepcionista', header: 'Recepcionista' },
+      { field: 'fecha_recepcion', header: 'Fecha de Recepcion' },
+      { field: 'fecha_est_entrega', header: 'Fecha Estimada de Entrega' },
+      { field: 'hora_est_entrega', header: 'Hora Estimada de Entrega' }
+    ];
+    this.loadPage({ page: 0, size: this.pageSize });
 
     this.personasService.getAllEmpleados().pipe(takeUntil(this.destroy$)).subscribe((data)=>{
       this.empleados = data;
@@ -148,9 +125,9 @@ export class DatosServicioComponent implements OnInit, OnDestroy {
       this.usuarios = data;
     });
 
-    this.personasService.getAllClientes().pipe(takeUntil(this.destroy$)).subscribe((data)=>{
+    this.personasService.getAllClientes().pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.clientes = data;
-    })
+    });
 
     this.tipoServicioService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data)=>{
       this.tipoServicio = data;
@@ -158,6 +135,50 @@ export class DatosServicioComponent implements OnInit, OnDestroy {
 
     this.loadChecklistOptions();
    
+  }
+
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.datosServicioService
+      .getPage(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (item) => ({
+            id: item.id,
+            personaId: item.personaId,
+            usuarioId: item.usuarioId,
+            cliente: item.cliente,
+            modelo: item.DatosServicio.modelo,
+            num_motor: item.DatosServicio.num_motor,
+            num_chasis: item.DatosServicio.num_chasis,
+            patente: item.DatosServicio.patente,
+            color: item.DatosServicio.color,
+            tipo_servicio: item.TipoServicio,
+            tipoServicioId: item.tipoServicioId,
+            kilometros: item.DatosServicio.kilometros,
+            estado_general: item.DatosServicio.estado_general,
+            observaciones: item.DatosServicio.observaciones,
+            Recepcionista: item.Recepcionista,
+            fecha_recepcion: this.dateFormatterService.formatDateToDDMMYY(item.DatosServicio.fecha_recepcion),
+            fecha_est_entrega: this.dateFormatterService.formatDateToDDMMYY(item.DatosServicio.fecha_est_entrega),
+            hora_est_entrega: item.DatosServicio.hora_est_entrega,
+            recepcionistaId: item.DatosServicio.recepcionistaId,
+            DatosServicio: item.DatosServicio,
+            datosServicioId: item.datosServicioId,
+            Servicios: item.Servicios,
+            subtotal: item.subtotal,
+            checklist: item.checklist
+          }));
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -282,9 +303,7 @@ export class DatosServicioComponent implements OnInit, OnDestroy {
     } else {
       // Es crear
       this.datosServicioService.create({...this.tipo, usuarioId: this.usuarioId, recepcionistaId:this.recepcionistaId}).pipe(takeUntil(this.destroy$)).subscribe(() => {
-        setTimeout(() => {
-          window.location.reload();
-        }, 600);
+        this.loadPage({ page: 0, size: this.pageSize });
       }, error => {
         console.error('Error al crear:', error);
       });
@@ -293,9 +312,7 @@ export class DatosServicioComponent implements OnInit, OnDestroy {
 
   eliminar() {
     this.movimientosService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      this.loadPage({ page: 0, size: this.pageSize });
     }, error => {
       console.error('Error al eliminar:', error);
     });

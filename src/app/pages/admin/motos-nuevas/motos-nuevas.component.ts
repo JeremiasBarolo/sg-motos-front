@@ -6,6 +6,7 @@ import { MotosService } from '../../../services/motos.service';
 import { TipoMotosService } from '../../../services/tipo-motos.service';
 import { MarcaService } from '../../../services/marca.service';
 import { AuthService } from '../../../services/auth.service';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 
 @Component({
   selector: 'app-motos-nuevas',
@@ -26,6 +27,10 @@ export class MotosNuevasComponent {
   tipoMotos: any[] = [];
   marcas: any[] = [];
   isAdmin: any;
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   private destroy$ = new Subject<void>();
 
@@ -58,47 +63,54 @@ export class MotosNuevasComponent {
   
   ngOnInit(): void {
     this.isAdmin = this.authService.isAllowed();
-    this.motosService.getAllNuevas().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
-        { field: 'id', header: 'ID' },
-        { field: 'Marca', header: 'Marca'},
-        { field: 'modelo', header: 'Modelo' },
-        { field: 'year', header: 'Año' },
-        { field: 'num_motor', header: 'Numero de Motor' },
-        { field: 'num_cuadro', header: 'Numero de Cuadro' },
-        { field: 'cilindrada', header: 'Cilindrada' },
-        { field: 'cert_num_fabrica', header: 'Cert. Num. Fabrica' },
-        { field: 'precio', header: 'Precio' },
-        
-        
-      ];
+    this.columns = [
+      { field: 'id', header: 'ID' },
+      { field: 'Marca', header: 'Marca' },
+      { field: 'modelo', header: 'Modelo' },
+      { field: 'year', header: 'Año' },
+      { field: 'num_motor', header: 'Numero de Motor' },
+      { field: 'num_cuadro', header: 'Numero de Cuadro' },
+      { field: 'cilindrada', header: 'Cilindrada' },
+      { field: 'cert_num_fabrica', header: 'Cert. Num. Fabrica' },
+      { field: 'precio', header: 'Precio' },
+    ];
+    this.loadPage({ page: 0, size: this.pageSize });
 
-      data.map((data)=>{
-         console.log();
-         
-        this.products.push({
-          id: data.id,
-          Marca: data.Marca,
-          modelo: data.modelo,
-          year: data.year,
-          num_motor: data.num_motor,
-          num_cuadro: data.num_cuadro,
-          cilindrada: data.cilindrada,
-          cert_num_fabrica: data.cert_num_fabrica,
-          precio: data.precio,
-          TipoMoto: data.TipoMoto,
-          marcaId: data.marcaId
-        })
-      })
-    })
-
-    
-
-    this.marcaService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data)=>{
+    this.marcaService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.marcas = data;
-    })
+    });
+  }
 
-   
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.motosService
+      .getPageNuevas(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (data) => ({
+            id: data.id,
+            Marca: data.Marca,
+            modelo: data.modelo,
+            year: data.year,
+            num_motor: data.num_motor,
+            num_cuadro: data.num_cuadro,
+            cilindrada: data.cilindrada,
+            cert_num_fabrica: data.cert_num_fabrica,
+            precio: data.precio,
+            TipoMoto: data.TipoMoto,
+            marcaId: data.marcaId,
+            tipoMotoId: data.tipoMotoId,
+          }));
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -153,9 +165,7 @@ export class MotosNuevasComponent {
             // Es editar
             try {
               this.motosService.update(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 600)
+                this.loadPage({ page: 0, size: this.pageSize });
               });
 
             } catch (error) {
@@ -165,9 +175,7 @@ export class MotosNuevasComponent {
         // Es crear
         try {
           this.motosService.create(this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize });
           });
           
         } catch (error) {
@@ -178,9 +186,7 @@ export class MotosNuevasComponent {
 
   Eliminar(){
     this.motosService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      this.loadPage({ page: 0, size: this.pageSize });
       // this.router.navigate(['dashboard/insumos']);
     });
   }

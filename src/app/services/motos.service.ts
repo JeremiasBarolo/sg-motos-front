@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { PaginatedResponse } from '../models/paginated-response';
+import { getPaginated } from '../utils/pagination-http.util';
 
 @Injectable({
   providedIn: 'root'
@@ -25,22 +27,41 @@ export class MotosService {
     return headers;
   }
  
-  //get all
-  getAll(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`, { headers: this.getHeaders() }); 
+  getAll(): Observable<any[] | PaginatedResponse<any>> {
+    return this.http.get<any[] | PaginatedResponse<any>>(`${this.apiUrl}`, { headers: this.getHeaders() });
   }
 
-  getAllUsadas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/usadas`, { headers: this.getHeaders() }); 
+  getAllDisponibles(excludeMotoId?: number): Observable<any[] | PaginatedResponse<any>> {
+    const params = excludeMotoId != null ? `?excludeMotoId=${excludeMotoId}` : '';
+    return this.http.get<any[] | PaginatedResponse<any>>(`${this.apiUrl}/disponibles${params}`, { headers: this.getHeaders() });
   }
 
-  getAllConsignacion(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/consignacion`, { headers: this.getHeaders() }); 
+  getPage(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, this.apiUrl, page, size, this.getHeaders());
   }
 
+  getAllUsadas(): Observable<any[] | PaginatedResponse<any>> {
+    return this.http.get<any[] | PaginatedResponse<any>>(`${this.apiUrl}/usadas`, { headers: this.getHeaders() });
+  }
 
-  getAllNuevas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/nuevas`, { headers: this.getHeaders() }); 
+  getPageUsadas(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, `${this.apiUrl}/usadas`, page, size, this.getHeaders());
+  }
+
+  getAllConsignacion(): Observable<any[] | PaginatedResponse<any>> {
+    return this.http.get<any[] | PaginatedResponse<any>>(`${this.apiUrl}/consignacion`, { headers: this.getHeaders() });
+  }
+
+  getPageConsignacion(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, `${this.apiUrl}/consignacion`, page, size, this.getHeaders());
+  }
+
+  getAllNuevas(): Observable<any[] | PaginatedResponse<any>> {
+    return this.http.get<any[] | PaginatedResponse<any>>(`${this.apiUrl}/nuevas`, { headers: this.getHeaders() });
+  }
+
+  getPageNuevas(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, `${this.apiUrl}/nuevas`, page, size, this.getHeaders());
   }
 
 

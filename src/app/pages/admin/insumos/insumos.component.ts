@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 import { PersonasService } from '../../../services/personas.service';
 import { StockService } from '../../../services/stock.service';
 import { TipoArticuloService } from '../../../services/tipo-articulo.service';
@@ -25,6 +26,10 @@ export class InsumosComponent implements OnInit, OnDestroy {
   proveedores: any[] = [];
   tipoArticulos: any[] = [];
   isAdmin: any;
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   private destroy$ = new Subject<void>();
 
@@ -97,6 +102,35 @@ export class InsumosComponent implements OnInit, OnDestroy {
    
   }
   
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.stockService
+      .getPageInsumos(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (data) => ({
+            id: data.id,
+            nombre_articulo: data.nombre_articulo,
+            descripcion: data.descripcion,
+            tipoArticulo: data.tipoArticulo,
+            proveedor: data.proveedor,
+            costo: data.costo,
+            proveedorId: data.proveedorId,
+            tipoArticuloId: data.tipoArticuloId,
+            cantidad: data.cantidad
+          }));
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -138,9 +172,7 @@ export class InsumosComponent implements OnInit, OnDestroy {
             // Es editar
             try {
               this.stockService.update(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 600)
+                this.loadPage({ page: 0, size: this.pageSize })
               });
 
             } catch (error) {
@@ -150,9 +182,7 @@ export class InsumosComponent implements OnInit, OnDestroy {
         // Es crear
         try {
           this.stockService.create(this.tipo ).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize })
           });
           
         } catch (error) {
@@ -163,9 +193,7 @@ export class InsumosComponent implements OnInit, OnDestroy {
 
   Eliminar(){
     this.stockService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      this.loadPage({ page: 0, size: this.pageSize })
       // this.router.navigate(['dashboard/insumos']);
     });
   }

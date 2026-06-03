@@ -8,6 +8,7 @@ import { TipoArticuloService } from '../../../services/tipo-articulo.service';
 import { PedidosService } from '../../../services/pedidos.service';
 import { DatePipe } from '@angular/common';
 import { MessageService } from 'primeng/api';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 
 @Component({
   selector: 'app-pedidos-stock',
@@ -32,7 +33,10 @@ export class PedidosStockComponent {
   options: any[] = [];
   Articulos:any[] = []
   selectedEntities: any[] = [];
-  
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   private destroy$ = new Subject<void>();
 
@@ -57,35 +61,15 @@ export class PedidosStockComponent {
   
   ngOnInit(): void {
 
-    this.pedidosService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
-        { field: 'id', header: 'ID' },
-        { field: 'descripcion', header: 'Descripcion' },
-        { field: 'cantidadPedido', header: 'Cantidad del Pedido' },
-        { field: 'FechaRealizacion', header: 'Fecha de Realizacion' },
-        { field: 'total', header: 'Costo' },
-        { field: 'estado', header: 'Estado' },
-        
-        
-
-      ];
-
-      let dataSorted = data.sort((a, b) => b.id - a.id)
-      dataSorted.map((data)=>{
-
-        this.products.push({
-          id: data.id,
-          descripcion: data.descripcion,
-          estado: data.estado,
-          cantidadPedido: data.Pedido.length,
-          Pedido: data.Pedido,
-          total: data.total,
-          FechaRealizacion: this.datePipe.transform(data.FechaRealizacion, 'dd/MM/yy')
-        })
-      })
-    })
-
-    
+    this.columns = [
+      { field: 'id', header: 'ID' },
+      { field: 'descripcion', header: 'Descripcion' },
+      { field: 'cantidadPedido', header: 'Cantidad del Pedido' },
+      { field: 'FechaRealizacion', header: 'Fecha de Realizacion' },
+      { field: 'total', header: 'Costo' },
+      { field: 'estado', header: 'Estado' },
+    ];
+    this.loadPage({ page: 0, size: this.pageSize });
 
     this.stockService.getAllStockGeneral().pipe(takeUntil(this.destroy$)).subscribe((data)=>{
       console.log('data:',data);
@@ -111,6 +95,33 @@ export class PedidosStockComponent {
    
   }
   
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.pedidosService
+      .getPage(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (data) => ({
+            id: data.id,
+            descripcion: data.descripcion,
+            estado: data.estado,
+            cantidadPedido: data.Pedido.length,
+            Pedido: data.Pedido,
+            total: data.total,
+            FechaRealizacion: this.datePipe.transform(data.FechaRealizacion, 'dd/MM/yy'),
+          }));
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -179,16 +190,12 @@ export class PedidosStockComponent {
       if(this.id > 0){
         if(edit){
           this.pedidosService.SumarCantidades(this.id, {estado: 'Finalizado'}).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize });
           });
         }else{
           try {
             this.pedidosService.updatePedidoStock(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-              setTimeout(() => {
-                window.location.reload();
-              }, 600)
+              this.loadPage({ page: 0, size: this.pageSize });
             });
 
           } catch (error) {
@@ -199,9 +206,7 @@ export class PedidosStockComponent {
       }else{
         try {
           this.pedidosService.create(this.tipo ).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize });
           });
           
         } catch (error) {
@@ -212,9 +217,7 @@ export class PedidosStockComponent {
 
   Eliminar(){
     this.pedidosService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      this.loadPage({ page: 0, size: this.pageSize });
     });
   }
 

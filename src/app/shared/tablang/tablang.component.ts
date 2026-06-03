@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { PageChangeEvent } from '../../models/paginated-response';
 
 @Component({
   selector: 'app-tablang',
@@ -10,6 +11,11 @@ import { AuthService } from '../../services/auth.service';
 export class TablangComponent implements OnInit, OnDestroy, OnChanges {
   @Input() data: any[] = [];
   @Input() columns: any[] = [];
+  @Input() serverSide = false;
+  @Input() totalRecords = 0;
+  @Input() rows = 10;
+  @Input() loading = false;
+  @Output() pageChange = new EventEmitter<PageChangeEvent>();
   @Input() accionesVisible: boolean = true;
   @Input() insumosVisible: boolean = false;
   @Input() adicionalesVisible: boolean = false;
@@ -91,5 +97,13 @@ export class TablangComponent implements OnInit, OnDestroy, OnChanges {
 
   pdfClick(rowData: any) {
     this.pdfOpenClick.emit(rowData);
+  }
+
+  onLazyLoad(event: any): void {
+    if (!this.serverSide) {
+      return;
+    }
+    const page = Math.floor(event.first / event.rows);
+    this.pageChange.emit({ page, size: event.rows });
   }
 }

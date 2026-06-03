@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 import { UsuariosService } from '../../../services/usuarios.service';
 import { PersonasService } from '../../../services/personas.service';
 import { RolesService } from '../../../services/roles.service';
@@ -26,6 +27,10 @@ export class UsuariosComponent {
   id: number = 0;
   empleados: any[] = [];
   roles: any[] = [];
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   private destroy$ = new Subject<void>();
 
@@ -55,9 +60,7 @@ export class UsuariosComponent {
   }
   
   ngOnInit(): void {
-
-    this.usuariosService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
+    this.columns = [
         { field: 'id', header: 'ID' },
         { field: 'user', header: 'Usuario' },
         { field: 'name', header: 'Nombre' },
@@ -66,33 +69,15 @@ export class UsuariosComponent {
         
 
       ];
+    this.loadPage({ page: 0, size: this.pageSize });
 
-      data.map((data)=>{
-
-        this.products.push({
-          id: data.id,
-          user: data.user,
-          name: data.name,
-          lastname: data.lastname,
-          rol: data.rol,
-          rolId: data.rolId,
-          personaId: data.personaId,
-          
-        })
-      })
-    })
-
-    this.personasService.getAllEmpleados().pipe(takeUntil(this.destroy$)).subscribe((data)=>{
+    this.personasService.getAllEmpleados().pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.empleados = data;
-      
-      
-    })
+    });
 
-    this.rolService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data)=>{
+    this.rolService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.roles = data;
-    })
-
-   
+    });
   }
 
   editarItem(data:any) {
@@ -130,9 +115,7 @@ export class UsuariosComponent {
        
         try {
           this.usuariosService.updatePassword(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize })
           });
 
         } catch (error) {
@@ -160,9 +143,7 @@ export class UsuariosComponent {
             // Es editar
             try {
               this.usuariosService.update(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 600)
+                this.loadPage({ page: 0, size: this.pageSize })
               });
 
             } catch (error) {
@@ -172,9 +153,7 @@ export class UsuariosComponent {
         // Es crear
         try {
           this.usuariosService.create(this.tipo ).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize })
           });
           
         } catch (error) {
@@ -185,10 +164,33 @@ export class UsuariosComponent {
 
   Eliminar(){
     this.usuariosService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      this.loadPage({ page: 0, size: this.pageSize })
       // this.router.navigate(['dashboard/insumos']);
+    });
+  }
+
+  
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.usuariosService.getPage(event.page, event.size).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        const mapped = mapPaginatedResponse(response, (data) => ({
+          id: data.id,
+          user: data.user,
+          name: data.name,
+          lastname: data.lastname,
+          rol: data.rol,
+          rolId: data.rolId,
+          personaId: data.personaId,
+        }));
+        this.products = mapped.items;
+        this.totalRecords = mapped.totalRecords;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 

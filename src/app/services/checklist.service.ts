@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, tap } from 'rxjs';
 import { AuthService } from './auth.service';
+import { PaginatedResponse } from '../models/paginated-response';
+import { getPaginated } from '../utils/pagination-http.util';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +29,10 @@ export class ChecklistService {
   //get all
   getAll(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}`,{ headers: this.getHeaders() }); 
+  }
+
+  getPage(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, this.apiUrl, page, size, this.getHeaders());
   }
 
   // get by id

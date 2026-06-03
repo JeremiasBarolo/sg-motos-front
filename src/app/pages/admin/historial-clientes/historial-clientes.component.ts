@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { MovimientosService } from '../../../services/movimientos.service';
 import { DatePipe } from '@angular/common';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 
 @Component({
   selector: 'app-historial-clientes',
@@ -24,8 +25,12 @@ export class HistorialClientesComponent implements OnInit, OnDestroy {
   clienteChoice:any[] = []
   selectedDate: any;
   fechasModal: boolean = false
-  private destroy$ = new Subject<void>();
   filteredProducts: any[] = []
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
+  private destroy$ = new Subject<void>();
 
 
   constructor( 
@@ -44,45 +49,55 @@ export class HistorialClientesComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit(): void {
+    this.columns = [
+      { field: 'id', header: 'ID' },
+      { field: 'cliente', header: 'Cliente' },
+      { field: 'TipoMovimiento', header: 'Tipo Movimiento' },
+      { field: 'subtotal', header: 'Monto Final' },
+      { field: 'FechaRealizacion', header: 'Fecha Realizacion' },
+      { field: 'hora', header: 'Hora' },
+      { field: 'usuario', header: 'Recepcionista' },
+    ];
+    this.loadPage({ page: 0, size: this.pageSize });
+  }
 
-    const uniqueEmpledos = new Set();
-
-    this.movimientosService.getAllHistorial().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
-        { field: 'id', header: 'ID' },
-        { field: 'cliente', header: 'Cliente' },
-        { field: 'TipoMovimiento', header: 'Tipo Movimiento' },
-        { field: 'subtotal', header: 'Monto Final' },
-        { field: 'FechaRealizacion', header: 'Fecha Realizacion' },
-        { field: 'hora', header: 'Hora' },
-        { field: 'usuario', header: 'Recepcionista' },
-      ];
-
-      let dataSorted = data.sort((a, b) => b.id - a.id)
-      dataSorted.map((item)=>{
-        this.products.push({
-          id: item.id,
-          cliente: item.cliente,
-          TipoMovimiento: item.TipoMovimiento,
-          subtotal: item.subtotal,
-          FechaRealizacion: item.FechaRealizacion,
-          hora: item.hora,
-          usuario: item.usuario,
-          tipoMovimientoId: item.tipoMovimientoId,
-          usuarioId: item.usuarioId,
-          personaId: item.personaId,
-          createdAt: item.createdAt,
-          updatedAt: item.updatedAt
-        })
-
-         if (!uniqueEmpledos.has(item.personaId)) {
-          uniqueEmpledos.add(item.personaId);
-          this.clienteChoice.push({ id: item.personaId, cliente: item.cliente });
-        }
-      })
-    })
-
-   
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    const uniqueClientes = new Set<number>();
+    this.movimientosService
+      .getPageHistorial(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (item) => {
+            if (!uniqueClientes.has(item.personaId)) {
+              uniqueClientes.add(item.personaId);
+              this.clienteChoice.push({ id: item.personaId, cliente: item.cliente });
+            }
+            return {
+              id: item.id,
+              cliente: item.cliente,
+              TipoMovimiento: item.TipoMovimiento,
+              subtotal: item.subtotal,
+              FechaRealizacion: item.FechaRealizacion,
+              hora: item.hora,
+              usuario: item.usuario,
+              tipoMovimientoId: item.tipoMovimientoId,
+              usuarioId: item.usuarioId,
+              personaId: item.personaId,
+              createdAt: item.createdAt,
+              updatedAt: item.updatedAt
+            };
+          });
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
  
 

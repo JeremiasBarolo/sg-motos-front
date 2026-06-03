@@ -8,6 +8,7 @@ import { AuthService } from '../../../services/auth.service';
 import { TareasService } from '../../../services/tareas.service';
 import { color } from 'html2canvas/dist/types/css/types/color';
 import { UsuariosService } from '../../../services/usuarios.service';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 
 @Component({
   selector: 'app-tareas',
@@ -39,6 +40,10 @@ export class TareasComponent {
   empleadoChoice:any[] = []
   filteredProducts: any[] = []
   showTable: boolean =false
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
 
 
@@ -62,42 +67,56 @@ export class TareasComponent {
   
   ngOnInit(): void {
     this.isAdmin = this.authService.isAllowed();
-  
-    
-    const uniqueEmpledos = new Set();
-  
-    this.tareasService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
-        { field: 'id', header: 'ID' },
-        { field: 'titulo', header: 'Tarea' },
-        { field: 'usuario', header: 'Empleado' },
-        { field: 'estado', header: 'Estado' },
-        { field: 'fecha_asignacion', header: 'Fecha Asig.' },
-      ];
-  
-      data.forEach((item) => {
-        this.products.push({
-          id: item.id,
-          titulo: item.titulo,
-          descripcion: item.descripcion,
-          usuario: item.usuario,
-          usuarioId: item.usuarioId,
-          color: item.color,
-          estado: item.estado,
-          fecha_asignacion: item.fecha_asignacion,
-        });
-  
-        
-        if (!uniqueEmpledos.has(item.usuarioId)) {
-          uniqueEmpledos.add(item.usuarioId);
-          this.empleadoChoice.push({ id: item.usuarioId, empleado: item.usuario });
-        }
-      });
-    });
-  
+
+    this.columns = [
+      { field: 'id', header: 'ID' },
+      { field: 'titulo', header: 'Tarea' },
+      { field: 'usuario', header: 'Empleado' },
+      { field: 'estado', header: 'Estado' },
+      { field: 'fecha_asignacion', header: 'Fecha Asig.' },
+    ];
+    this.loadPage({ page: 0, size: this.pageSize });
+    this.loadEmpleados();
+  }
+
+  private loadEmpleados(): void {
     this.usuariosService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.empleados = data.filter((item) => item.rolId == 2);
+      this.empleados = data.filter((item) => item.rolId === 2);
+      this.empleadoChoice = this.empleados.map((empleado) => ({
+        id: empleado.id,
+        empleado: `${empleado.name} ${empleado.lastname}`.trim(),
+      }));
     });
+  }
+
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.tareasService
+      .getPage(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (item) => {
+            return {
+              id: item.id,
+              titulo: item.titulo,
+              descripcion: item.descripcion,
+              usuario: item.usuario,
+              usuarioId: item.usuarioId,
+              color: item.color,
+              estado: item.estado,
+              fecha_asignacion: item.fecha_asignacion,
+            };
+          });
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
   
   // Función para filtrar tareas por empleado seleccionado
@@ -150,9 +169,7 @@ export class TareasComponent {
             // Es editar
             try {
               this.tareasService.update(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 600)
+                this.loadPage({ page: 0, size: this.pageSize });
               });
 
             } catch (error) {
@@ -162,9 +179,7 @@ export class TareasComponent {
         // Es crear
         try {
           this.tareasService.create(this.tipo ).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize });
           });
           
         } catch (error) {
@@ -175,24 +190,26 @@ export class TareasComponent {
 
   Eliminar(){
     this.tareasService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      this.loadPage({ page: 0, size: this.pageSize });
       // this.router.navigate(['dashboard/insumos']);
     });
   }
 
   searchClientMovements() {
-    
-      this.empleadoTareas = this.products.filter(movement => movement.usuarioId === this.selectedClient.id);
-      this.showTable = true;
-    
+    if (!this.selectedClient?.id) {
+      return;
+    }
+    this.empleadoTareas = this.products.filter(
+      (movement) => movement.usuarioId === this.selectedClient.id
+    );
+    this.showTable = true;
   }
   
   
 
   onClientChange(event: any) {
-    this.selectedClient = event.value;
+    const empleadoId = event.value?.id ?? event.value;
+    this.selectedClient = this.empleadoChoice.find((e) => e.id === empleadoId) ?? { id: empleadoId };
     this.searchClientMovements();
   }
 

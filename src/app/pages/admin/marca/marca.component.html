@@ -6,6 +6,11 @@
 <app-tablang
     [data]="products"
     [columns]="columns"
+    [serverSide]="serverSide"
+    [totalRecords]="totalRecords"
+    [rows]="pageSize"
+    [loading]="loading"
+    (pageChange)="loadPage($event)"
     (editarClick)="editarItem($event)" 
     (eliminarClick)="eliminarItem($event)"
 ></app-tablang>

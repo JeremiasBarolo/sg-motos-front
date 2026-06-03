@@ -35,12 +35,21 @@
 <!-- <================================ CREATE =======================================> -->
 <p-dialog header="Crear Venta" [modal]="true" [(visible)]="crearVisible" [style]="{ width: '50rem' }">
     <form [formGroup]="form" (ngSubmit)="onSubmit()"> 
-        <div class="flex align-items-center gap-3 mb-3">
-            <label for="personaId" class="font-semibold w-6rem"><strong>Cliente</strong></label>
-            <br>
-            <select id="personaId" class="flex-auto" formControlName="personaId">
-                <option *ngFor="let persona of clientes" [value]="persona.id">{{ persona.nombre }} {{ persona.apellido }}</option>
-            </select>
+        <div class="field mb-3 w-full">
+            <label for="personaIdCrearMoto" class="font-semibold"><strong>Cliente</strong></label>
+            <p-dropdown
+              inputId="personaIdCrearMoto"
+              formControlName="personaId"
+              [options]="clientes"
+              optionLabel="nombreCompleto"
+              optionValue="id"
+              placeholder="Seleccionar cliente"
+              [filter]="true"
+              filterBy="nombreCompleto"
+              [showClear]="true"
+              appendTo="body"
+              [style]="{ width: '100%' }">
+            </p-dropdown>
         </div>
         
         <div class="flex align-items-center gap-3 mb-3">
@@ -69,12 +78,21 @@
 <!-- <================================ UPDATE =======================================> -->
 <p-dialog header="Editar Venta" [modal]="true" [(visible)]="editVisible" [style]="{ width: '50rem' }">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="flex align-items-center gap-3 mb-3">
-            <label for="personaId" class="font-semibold w-6rem"><strong>Cliente</strong></label>
-            <br>
-            <select id="personaId" class="flex-auto" formControlName="personaId">
-                <option *ngFor="let persona of clientes" [value]="persona.id"> {{ persona.nombre }} {{ persona.apellido }}  </option>
-            </select>
+        <div class="field mb-3 w-full">
+            <label for="personaIdEditMoto" class="font-semibold"><strong>Cliente</strong></label>
+            <p-dropdown
+              inputId="personaIdEditMoto"
+              formControlName="personaId"
+              [options]="clientes"
+              optionLabel="nombreCompleto"
+              optionValue="id"
+              placeholder="Seleccionar cliente"
+              [filter]="true"
+              filterBy="nombreCompleto"
+              [showClear]="true"
+              appendTo="body"
+              [style]="{ width: '100%' }">
+            </p-dropdown>
         </div>
         
         <div class="flex align-items-center gap-3 mb-3">

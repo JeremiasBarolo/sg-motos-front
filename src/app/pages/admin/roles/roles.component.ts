@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 import { RolesService } from '../../../services/roles.service';
 
 @Component({
@@ -21,7 +22,11 @@ export class RolesComponent {
   form: FormGroup;
   tipo: any;
   cardData: any;
-  id: number = 0
+  id: number = 0;
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   private destroy$ = new Subject<void>();
 
@@ -42,26 +47,12 @@ export class RolesComponent {
   }
   
   ngOnInit(): void {
-
-    this.rolesService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
+    this.columns = [
         { field: 'id', header: 'ID' },
         { field: 'descripcion', header: 'Descripcion' },
         { field: 'isAdmin', header: 'Es Admin?' },
       ];
-
-      data.map((data)=>{
-        console.log(data);
-        
-        this.products.push({
-          id: data.id,
-          descripcion: data.descripcion,
-          isAdmin: this.isAdmin(data.isAdmin),
-        })
-      })
-    })
-
-   
+    this.loadPage({ page: 0, size: this.pageSize });
   }
 
   editarItem(data:any) {
@@ -108,9 +99,7 @@ export class RolesComponent {
             // Es editar
             try {
               this.rolesService.update(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 600)
+                this.loadPage({ page: 0, size: this.pageSize })
               });
 
             } catch (error) {
@@ -120,15 +109,34 @@ export class RolesComponent {
         // Es crear
         try {
           this.rolesService.create(this.tipo ).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize })
           });
           
         } catch (error) {
           console.log(error);
         }
       }
+  }
+
+  
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.rolesService.getPage(event.page, event.size).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        const mapped = mapPaginatedResponse(response, (data) => ({
+          id: data.id,
+          descripcion: data.descripcion,
+          isAdmin: this.isAdmin(data.isAdmin),
+        }));
+        this.products = mapped.items;
+        this.totalRecords = mapped.totalRecords;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 
   ngOnDestroy(): void {
@@ -138,9 +146,7 @@ export class RolesComponent {
 
   Eliminar(){
     this.rolesService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      this.loadPage({ page: 0, size: this.pageSize })
       // this.router.navigate(['dashboard/insumos']);
     });
   }

@@ -6,6 +6,7 @@ import { PersonasService } from '../../../services/personas.service';
 import { StockService } from '../../../services/stock.service';
 import { TipoArticuloService } from '../../../services/tipo-articulo.service';
 import { AuthService } from '../../../services/auth.service';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 
 @Component({
   selector: 'app-stock',
@@ -25,6 +26,10 @@ export class StockComponent implements OnInit {
   proveedores: any[] = [];
   tipoArticulos: any[] = [];
   isAdmin: any;
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   private destroy$ = new Subject<void>();
 
@@ -54,36 +59,16 @@ export class StockComponent implements OnInit {
   ngOnInit(): void {
     this.isAdmin = this.authService.isAllowed();
 
-    this.stockService.getAllStockGeneral().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
-        { field: 'id', header: 'ID' },
-        { field: 'nombre_articulo', header: 'Nombre Articulo' },
-        { field: 'descripcion', header: 'Descripcion' },
-        { field: 'tipoArticulo', header: 'Tipo Articulo' },
-        { field: 'proveedor', header: 'Proveedor' },
-        { field: 'costo', header: 'Costo' },
-        { field: 'cantidad', header: 'Cantidad' },
-        
-
-      ];
-
-      data.map((data)=>{
-
-        this.products.push({
-          id: data.id,
-          nombre_articulo: data.nombre_articulo,
-          descripcion: data.descripcion,
-          tipoArticulo: data.tipoArticulo,
-          proveedor: data.proveedor,
-          costo: data.costo,
-          proveedorId: data.proveedorId,
-          tipoArticuloId: data.tipoArticuloId,
-          cantidad: data.cantidad,
-        
-          
-        })
-      })
-    })
+    this.columns = [
+      { field: 'id', header: 'ID' },
+      { field: 'nombre_articulo', header: 'Nombre Articulo' },
+      { field: 'descripcion', header: 'Descripcion' },
+      { field: 'tipoArticulo', header: 'Tipo Articulo' },
+      { field: 'proveedor', header: 'Proveedor' },
+      { field: 'costo', header: 'Costo' },
+      { field: 'cantidad', header: 'Cantidad' },
+    ];
+    this.loadPage({ page: 0, size: this.pageSize });
 
     this.personasService.getAllProveedores().pipe(takeUntil(this.destroy$)).subscribe((data)=>{
       this.proveedores = data;
@@ -96,6 +81,35 @@ export class StockComponent implements OnInit {
     })
 
    
+  }
+
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.stockService
+      .getPageStockGeneral(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (data) => ({
+            id: data.id,
+            nombre_articulo: data.nombre_articulo,
+            descripcion: data.descripcion,
+            tipoArticulo: data.tipoArticulo,
+            proveedor: data.proveedor,
+            costo: data.costo,
+            proveedorId: data.proveedorId,
+            tipoArticuloId: data.tipoArticuloId,
+            cantidad: data.cantidad,
+          }));
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
   
   ngOnDestroy(): void {
@@ -140,9 +154,7 @@ export class StockComponent implements OnInit {
             // Es editar
             try {
               this.stockService.update(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 600)
+                this.loadPage({ page: 0, size: this.pageSize });
               });
 
             } catch (error) {
@@ -152,9 +164,7 @@ export class StockComponent implements OnInit {
         // Es crear
         try {
           this.stockService.create(this.tipo ).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize });
           });
           
         } catch (error) {
@@ -165,9 +175,7 @@ export class StockComponent implements OnInit {
 
   Eliminar(){
     this.stockService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      this.loadPage({ page: 0, size: this.pageSize });
       // this.router.navigate(['dashboard/insumos']);
     });
   }

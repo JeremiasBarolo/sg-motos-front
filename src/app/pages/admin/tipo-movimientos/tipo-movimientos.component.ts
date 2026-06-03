@@ -4,6 +4,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 import { TipoMovimientosService } from '../../../services/tipo-movimientos.service';
 
 @Component({
@@ -23,7 +24,11 @@ export class TipoMovimientosComponent implements OnInit {
   form: FormGroup;
   tipo: any;
   cardData: any;
-  id: number = 0
+  id: number = 0;
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   private destroy$ = new Subject<void>();
 
@@ -43,22 +48,11 @@ export class TipoMovimientosComponent implements OnInit {
   }
   
   ngOnInit(): void {
-
-    this.tipoMovimientosService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
+    this.columns = [
         { field: 'id', header: 'ID' },
         { field: 'descripcion', header: 'Descripcion' },
       ];
-
-      data.map((data)=>{
-        this.products.push({
-          id: data.id,
-          descripcion: data.descripcion
-        })
-      })
-    })
-
-   
+    this.loadPage({ page: 0, size: this.pageSize });
   }
 
   editarItem(data:any) {
@@ -87,9 +81,7 @@ export class TipoMovimientosComponent implements OnInit {
             // Es editar
             try {
               this.tipoMovimientosService.update(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 600)
+                this.loadPage({ page: 0, size: this.pageSize })
               });
 
             } catch (error) {
@@ -99,9 +91,7 @@ export class TipoMovimientosComponent implements OnInit {
         // Es crear
         try {
           this.tipoMovimientosService.create(this.tipo ).pipe(takeUntil(this.destroy$)).subscribe(() => {
-            setTimeout(() => {
-              window.location.reload();
-            }, 600)
+            this.loadPage({ page: 0, size: this.pageSize })
           });
           
         } catch (error) {
@@ -112,14 +102,32 @@ export class TipoMovimientosComponent implements OnInit {
 
   Eliminar(){
     this.tipoMovimientosService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      this.loadPage({ page: 0, size: this.pageSize })
       // this.router.navigate(['dashboard/insumos']);
     });
   }
 
   
+  
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.tipoMovimientosService.getPage(event.page, event.size).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        const mapped = mapPaginatedResponse(response, (data) => ({
+          id: data.id,
+          descripcion: data.descripcion
+        }));
+        this.products = mapped.items;
+        this.totalRecords = mapped.totalRecords;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

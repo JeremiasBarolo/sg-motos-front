@@ -1,37 +1,67 @@
 <p-toast></p-toast>
-<div class="bg-image" style=" background-image: url('../../../assets/images/authentication/au-reset-password-cover.png');
-background-size: cover; /* Asegúrate de que la imagen cubra todo el contenedor */
-background-repeat: no-repeat; /* Evita que la imagen se repita */
-background-position: center; /* Centra la imagen */
-width: 100vw; /* Asegúrate de que cubra todo el ancho de la ventana */
-height: 100vh; /* Asegúrate de que cubra todo el alto de la ventana */
-position: fixed; /* Asegura que el fondo se mantenga en su lugar */
-top: 0;
-left: 0;">
-  <div class="d-flex align-items-center justify-content-center vh-100">
-    <div class="col-xl-4 col-lg-5 col-md-7">
-      <div class="card radius-10">
-        <div class="card-body p-4 mr-10">
-          <div class="text-center">
-            <h4>Inicio de Sesion</h4>
-          </div>
-          <form [formGroup]="loginForm" class="form-body row g-3">
-            <div class="col-12">
-              <label for="inputEmail" class="form-label">Usuario</label>
-              <input type="email" class="form-control" id="inputEmail" placeholder="Usuario..." formControlName="username">
-            </div>
-            <div class="col-12">
-              <label for="inputPassword" class="form-label">Constraseña</label>
-              <input type="password" class="form-control" id="inputPassword" placeholder="Constraseña..." formControlName="password">
-            </div>
-            <div class="col-12 col-lg-12">
-              <div class="d-grid">
-                <button type="button" class="btn btn-primary" (click)="login()">Iniciar Sesion</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+
+<section class="login-page">
+  <div class="login-page__backdrop" aria-hidden="true">
+    <span class="login-page__grid"></span>
   </div>
-</div>
+
+  <main class="login-shell">
+    <div class="login-card">
+      <header class="login-card__header">
+        <img
+          class="login-card__logo"
+          src="/assets/images/logo-sg.png"
+          alt="SG Motos"
+          width="120"
+          height="120"
+        />
+        <h1 class="login-card__title">Iniciar sesión</h1>
+        <p class="login-card__subtitle">Panel de administración SG Motos</p>
+      </header>
+
+      <form
+        class="login-form"
+        [formGroup]="loginForm"
+        (ngSubmit)="login()"
+        autocomplete="on"
+      >
+        <div class="login-field">
+          <label class="login-field__label" for="inputUsername">Usuario</label>
+          <div class="login-field__control">
+            <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+            <input
+              id="inputUsername"
+              type="text"
+              class="login-field__input"
+              placeholder="Tu usuario"
+              formControlName="username"
+              autocomplete="username"
+            />
+          </div>
+        </div>
+
+        <div class="login-field">
+          <label class="login-field__label" for="inputPassword">Contraseña</label>
+          <div class="login-field__control">
+            <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
+            <input
+              id="inputPassword"
+              type="password"
+              class="login-field__input"
+              placeholder="Tu contraseña"
+              formControlName="password"
+              autocomplete="current-password"
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="login-submit">
+          <span>Iniciar sesión</span>
+          <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+        </button>
+      </form>
+    </div>
+
+    <p class="login-footer">SG Motos · Gestión integral</p>
+  </main>
+</section>

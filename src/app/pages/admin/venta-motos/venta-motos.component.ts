@@ -11,6 +11,7 @@ import { MotosService } from '../../../services/motos.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { mapPaginatedResponse, PageChangeEvent, unwrapList } from '../../../models/paginated-response';
 
 @Component({
   selector: 'app-venta-motos',
@@ -45,8 +46,11 @@ export class VentaMotosComponent implements OnDestroy, OnInit {
   selectedTipo: any;
   filteredProducts: any[]= []
   selectedDate: any;
-  fechasModal: boolean = false
-  
+  fechasModal: boolean = false;
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   constructor(
     private usuariosService: UsuariosService,
@@ -83,71 +87,107 @@ export class VentaMotosComponent implements OnDestroy, OnInit {
       this.usuarioId = data.userId;
     });
 
-    const uniqueClientes = new Set();
-    this.tipoMovimientoChoise = [];
+    this.columns = [
+      { field: 'id', header: 'ID' },
+      { field: 'nombreMoto', header: 'Moto' },
+      { field: 'createdAt', header: 'Fecha de Realizacion' },
+      { field: 'cliente', header: 'Cliente' },
+      { field: 'usuario', header: 'Recepcionista' },
+      { field: 'TipoMovimiento', header: 'Tipo Movimiento' },
+      { field: 'subtotal', header: 'Subtotal' },
+    ];
+    this.loadPage({ page: 0, size: this.pageSize });
 
-    this.movimientosService.getAllVentasMoto().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
-        { field: 'id', header: 'ID' },
-        { field: 'nombreMoto', header: 'Moto' },
-        { field: 'createdAt', header: 'Fecha de Realizacion' },
-        { field: 'cliente', header: 'Cliente' },
-        { field: 'usuario', header: 'Recepcionista' },
-        { field: 'TipoMovimiento', header: 'Tipo Movimiento' },
-        { field: 'subtotal', header: 'Subtotal' }
-      ];
-      this.products = data.map(item => {
-        const product = {
-          id: item.id,
-          createdAt: this.datePipe.transform(item.createdAt, 'dd/MM/yy'),
-          cliente: item.cliente,
-          usuario: item.usuario,
-          subtotal: item.subtotal,
-          usuarioId: item.usuarioId,
-          clienteId: item.clienteId,
-          personaId: item.personaId,
-          Moto: item.Moto,
-          motoId: item.Moto.id,
-          tipoMovimientoId: item.tipoMovimientoId,
-          TipoMovimiento: item.TipoMovimiento,
-          ClienteHasInfo: item.ClienteHasInfo,
-          OperacionHasInfo: item.OperacionHasInfo,
-          nombreMoto: `${item.Moto.marca} ${item.Moto.modelo}`
-        };
-  
-        if (!uniqueClientes.has(item.TipoMovimiento)) {
-          uniqueClientes.add(item.TipoMovimiento);
-          this.tipoMovimientoChoise.push({TipoMovimiento: item.TipoMovimiento });
-        }
-  
-        return product;
+    this.usuariosService.getAll().pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.usuarios = unwrapList(data);
+    });
+
+    this.loadClientes();
+    this.loadMotosDisponibles();
+  }
+
+  loadClientes(): void {
+    this.personasService.getAllClientes().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => {
+        this.clientes = data;
+      },
+      error: () => {
+        this.clientes = [];
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudieron cargar los clientes',
+        });
+      },
+    });
+  }
+
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    const uniqueTipos = new Set<string>();
+    this.movimientosService
+      .getPageVentasMoto(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (item) => {
+            if (!uniqueTipos.has(item.TipoMovimiento)) {
+              uniqueTipos.add(item.TipoMovimiento);
+              this.tipoMovimientoChoise.push({ TipoMovimiento: item.TipoMovimiento });
+            }
+            return {
+              id: item.id,
+              createdAt: this.datePipe.transform(item.createdAt, 'dd/MM/yy'),
+              cliente: item.cliente,
+              usuario: item.usuario,
+              subtotal: item.subtotal,
+              usuarioId: item.usuarioId,
+              clienteId: item.clienteId,
+              personaId: item.personaId,
+              Moto: item.Moto,
+              motoId: item.Moto.id,
+              tipoMovimientoId: item.tipoMovimientoId,
+              TipoMovimiento: item.TipoMovimiento,
+              ClienteHasInfo: item.ClienteHasInfo,
+              OperacionHasInfo: item.OperacionHasInfo,
+              nombreMoto: `${item.Moto.marca} ${item.Moto.modelo}`,
+            };
+          });
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
-    });
+  }
 
-    this.usuariosService.getAll().pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.usuarios = data;
-    });
-
-    this.personasService.getAllClientes().pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.clientes = data;
-    });
-
-    this.motoService.getAll().pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.motosDisponibles = data.map(moto => ({
+  loadMotosDisponibles(excludeMotoId?: number): void {
+    this.motoService.getAllDisponibles(excludeMotoId).pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      const list = unwrapList(data);
+      this.motosDisponibles = list.map((moto: any) => ({
         ...moto,
         nombreMoto: `${moto.Marca} ${moto.modelo}`,
-        motoId: moto.id
+        motoId: moto.id,
       }));
     });
   }
 
   openCrearVentaDialog(): void {
+    this.id = 0;
+    this.form.reset();
+    this.loadClientes();
+    this.loadMotosDisponibles();
     this.crearVisible = true;
   }
 
   editarItem(data: any) {
     this.editVisible = true;
     this.id = data.id;
+    this.loadClientes();
+    this.loadMotosDisponibles(data.motoId);
     this.form.patchValue({
       personaId: data.personaId,
       motoId: data.motoId
@@ -170,24 +210,23 @@ export class VentaMotosComponent implements OnDestroy, OnInit {
 
     if (this.id > 0) {
       this.movimientosService.updateVentaMoto(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-        setTimeout(() => {
-          window.location.reload();
-        }, 600);
+        this.crearVisible = false;
+        this.editVisible = false;
+        this.loadMotosDisponibles();
+        this.loadPage({ page: 0, size: this.pageSize });
       });
     } else {
       this.movimientosService.createVentaMoto(this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-        setTimeout(() => {
-          window.location.reload();
-        }, 600);
+        this.crearVisible = false;
+        this.loadMotosDisponibles();
+        this.loadPage({ page: 0, size: this.pageSize });
       });
     }
   }
 
   Eliminar() {
     this.movimientosService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      this.loadPage({ page: 0, size: this.pageSize });
     });
   }
 

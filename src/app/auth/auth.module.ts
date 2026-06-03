@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoginComponent } from './login/login.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
+import { IonicModule } from '@ionic/angular';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { ToastModule } from 'primeng/toast';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    ToastModule
+    ToastModule,
+    IonicModule
   ]
 })
 export class AuthModule { }

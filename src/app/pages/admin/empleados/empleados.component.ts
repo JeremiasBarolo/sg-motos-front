@@ -6,6 +6,7 @@ import { PersonasService } from '../../../services/personas.service';
 import { TipoPersonasService } from '../../../services/tipo-personas.service';
 import { LocalidadesService } from '../../../services/localidades.service';
 import { DatePipe } from '@angular/common';
+import { mapPaginatedResponse, PageChangeEvent } from '../../../models/paginated-response';
 
 
 @Component({
@@ -27,6 +28,10 @@ export class EmpleadosComponent {
   id: number = 0;
   tipoPersonas: any[] = [];
   roles: any[] = [];
+  totalRecords = 0;
+  pageSize = 10;
+  loading = false;
+  serverSide = true;
 
   private destroy$ = new Subject<void>();
 
@@ -61,43 +66,14 @@ export class EmpleadosComponent {
   
   ngOnInit(): void {
 
-    this.personasService.getAllEmpleados().pipe(takeUntil(this.destroy$)).subscribe((data: any[]) => {
-      this.columns = [
-        { field: 'id', header: 'ID' },
-        { field: 'nombreCompleto', header: 'Nombre' },
-        { field: 'telefono', header: 'Telefono' },
-        { field: 'direccionCompleta', header: 'Direccion' },
-        { field: 'mail', header: 'Correo Elec.' },
-      ];
-
-      data.map((data)=>{
-         console.log();
-         
-        this.products.push({
-          id: data.id,
-          nombre: data.nombre,
-          apellido: data.apellido,
-          nombreCompleto: `${data.nombre} ${data.apellido}`,
-          cuit: data.cuit,
-          dni: data.dni,
-          fecha_nacimientoFormatted: this.datePipe.transform(data.fecha_nacimiento, 'dd/MM/yy'),
-          fecha_nacimiento: data.fecha_nacimiento,
-          telefono: data.telefono,
-          direccion:data.direccion,
-          direccionCompleta: `${data.direccion} ${data.nro_direccion}, ${data.Localidad}`,
-          mail: data.mail,
-          tipoPersona: data.tipoPersona,
-          nro_direccion: data.nro_direccion,
-          password: data.password,
-          localidad: data.Localidad,
-          tipoPersonaId: data.tipoPersonaId,
-          localidadId: data.LocalidadId
-        
-          
-          
-        })
-      })
-    })
+    this.columns = [
+      { field: 'id', header: 'ID' },
+      { field: 'nombreCompleto', header: 'Nombre' },
+      { field: 'telefono', header: 'Telefono' },
+      { field: 'direccionCompleta', header: 'Direccion' },
+      { field: 'mail', header: 'Correo Elec.' },
+    ];
+    this.loadPage({ page: 0, size: this.pageSize });
 
     
 
@@ -106,6 +82,44 @@ export class EmpleadosComponent {
     })
 
    
+  }
+
+  loadPage(event: PageChangeEvent): void {
+    this.loading = true;
+    this.pageSize = event.size;
+    this.personasService
+      .getPageEmpleados(event.page, event.size)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const mapped = mapPaginatedResponse(response, (data) => ({
+            id: data.id,
+            nombre: data.nombre,
+            apellido: data.apellido,
+            nombreCompleto: `${data.nombre} ${data.apellido}`,
+            cuit: data.cuit,
+            dni: data.dni,
+            fecha_nacimientoFormatted: this.datePipe.transform(data.fecha_nacimiento, 'dd/MM/yy'),
+            fecha_nacimiento: data.fecha_nacimiento,
+            telefono: data.telefono,
+            direccion: data.direccion,
+            direccionCompleta: `${data.direccion} ${data.nro_direccion}, ${data.Localidad}`,
+            mail: data.mail,
+            tipoPersona: data.tipoPersona,
+            nro_direccion: data.nro_direccion,
+            password: data.password,
+            localidad: data.Localidad,
+            tipoPersonaId: data.tipoPersonaId,
+            localidadId: data.LocalidadId,
+          }));
+          this.products = mapped.items;
+          this.totalRecords = mapped.totalRecords;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 
   editarItem(data:any) {
@@ -160,9 +174,7 @@ export class EmpleadosComponent {
             // Es editar
             try {
               this.personasService.update(this.id, this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 600)
+                this.loadPage({ page: 0, size: this.pageSize });
               });
 
             } catch (error) {
@@ -173,7 +185,7 @@ export class EmpleadosComponent {
         try {
           this.personasService.create(this.tipo).pipe(takeUntil(this.destroy$)).subscribe(() => {
             setTimeout(() => {
-              window.location.reload();
+              this.loadPage({ page: 0, size: this.pageSize });
             }, 600)
           });
           
@@ -190,9 +202,7 @@ export class EmpleadosComponent {
 
   Eliminar(){
     this.personasService.delete(this.id).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      this.loadPage({ page: 0, size: this.pageSize });
       // this.router.navigate(['dashboard/insumos']);
     });
   }

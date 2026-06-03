@@ -1,4 +1,15 @@
-<p-table #dt [value]="data" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]" class="custom-datatable">
+<p-table
+  #dt
+  [value]="data"
+  [lazy]="serverSide"
+  [paginator]="true"
+  [rows]="rows"
+  [totalRecords]="serverSide ? totalRecords : data.length"
+  [loading]="loading"
+  [rowsPerPageOptions]="[5, 10, 20]"
+  (onLazyLoad)="onLazyLoad($event)"
+  class="custom-datatable"
+>
   <ng-template pTemplate="header" class="p-overlaypanel-header p-component-header">
     <tr>
       <th *ngFor="let col of columns">{{ col.header }}</th>

@@ -1,66 +1,56 @@
 
 <header class="top-header">
   <nav class="navbar">
-    
-    <div class="toggle-icon" (click)="toggleSidebar()">
-        <ion-icon name="menu-outline"></ion-icon>
-      </div>
-
+    <button
+      type="button"
+      class="header-menu-toggle"
+      (click)="toggleSidebar()"
+      [attr.aria-expanded]="!isSidebarToggled"
+      aria-label="Alternar menú lateral"
+    >
+      <ion-icon name="menu-outline"></ion-icon>
+    </button>
       <div class="top-navbar-right">
-          <ul class="navbar-nav">
-              <!-- <li class="nav-item">
-                  <a class="nav-link dark-mode-icon" >
-                      <div class="mode-icon">
-                          <ion-icon name="moon-outline"></ion-icon>
-                      </div>
-                  </a>
-              </li> -->
-              
-              <li class="nav-item dropdown-user-setting">
-                  <a class="nav-link dropdown-toggle"  (click)="toggleDropdown($event)">
-                      <div class="user-setting">
-                          <img src="/assets/images/avatars/06.png" class="user-img" alt="">
-                      </div>
-                  </a>
-                  <ul class="dropdown-menu" [class.show]="showDropdown">
-                      <li>
-                          <a class="dropdown-item">
-                              <div class="d-flex align-items-center">
-                                  <img src="/assets/images/avatars/06.png" alt="" class="rounded-circle" width="54" height="54">
-                                  <div class="ml-1" style="margin-left: 4px;">
-                                      <h6 class="dropdown-user-name">{{nombre}}</h6>
-                                      <small class="dropdown-user-designation text-secondary">{{rol}}</small>
-                                  </div>
-                              </div>
-                          </a>
-                      </li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li>
-                          <a class="dropdown-item" (click)="logout()">
-                              <div class="d-flex align-items-center">
-                                  <ion-icon name="log-out-outline"></ion-icon>
-                                  <div class="ms-3"><span>Logout</span></div>
-                              </div>
-                          </a>
-                      </li>
-                  </ul>
-              </li>
-          </ul>
+        <div class="user-menu" [class.is-open]="showDropdown">
+          <button
+            type="button"
+            class="user-menu-trigger"
+            (click)="toggleDropdown($event)"
+            [attr.aria-expanded]="showDropdown"
+            aria-haspopup="true"
+            aria-label="Menú de usuario"
+          >
+            <img src="/assets/images/avatars/06.png" class="user-avatar" alt="Usuario">
+            <ion-icon name="chevron-down-outline" class="user-menu-chevron"></ion-icon>
+          </button>
+
+          <div class="user-menu-panel" *ngIf="showDropdown">
+            <div class="user-menu-header">
+              <img src="/assets/images/avatars/06.png" class="user-menu-avatar-lg" alt="">
+              <div class="user-menu-info">
+                <p class="user-menu-name">{{ nombre || 'Usuario' }}</p>
+                <p class="user-menu-role">{{ rol || 'Sin rol' }}</p>
+              </div>
+            </div>
+
+            <div class="user-menu-divider"></div>
+
+            <button type="button" class="user-menu-action" (click)="logout()">
+              <ion-icon name="log-out-outline"></ion-icon>
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
+        </div>
       </div>
   </nav>
 </header>
 
-<aside class="sidebar-wrapper" [class.collapsed]="isSidebarCollapsed" data-simplebar="true">
+<aside class="sidebar-wrapper">
   <div class="sidebar-header">
-    <div>
-      <img src="../../../assets/images/logo-sg-motos.ico" class="logo-icon" alt="logo icon">
-    </div>
-    <div>
-      <h4 class="logo-text">SG-Motos</h4>
-    </div>
+    <img src="/assets/images/logo-sg.png" class="logo-icon" alt="SG Motos">
   </div>
-  <!--navigation-->
-  <ul class="menu" id="menu">
+  <nav class="sidebar-nav-scroll" aria-label="Menú principal">
+  <ul class="metismenu" id="menu">
     <li>
       <a (click)="navigateTo('admin/inicio')">
         <div class="parent-icon">
@@ -69,15 +59,15 @@
         <div class="menu-title">Inicio</div>
       </a>
     </li>
-    <li  *ngIf="!isSidebarCollapsed" class="menu-label">Manejo General</li>
+    <li class="menu-label">Manejo General</li>
     <li>
-      <a (click)="toggleSubMenu('stockSubmenu')" class="has-arrow">
+      <a href="javascript:void(0)" class="has-arrow">
         <div class="parent-icon">
           <ion-icon name="file-tray-stacked-outline"></ion-icon>
         </div>
         <div class="menu-title">Stock</div>
       </a>
-      <ul *ngIf="isSubMenuOpen('stockSubmenu')">
+      <ul>
         <li><a (click)="navigateTo('admin/stock')">
           <ion-icon name="ellipse-outline"></ion-icon> Listado stock
         </a></li>
@@ -114,16 +104,16 @@
       </a>
     </li>
 
-    <li *ngIf="!isSidebarCollapsed" class="menu-label">Gestionar Ventas</li>
+    <li class="menu-label">Gestionar Ventas</li>
 
     <li>
-      <a (click)="toggleSubMenu('ventasSubmenu')" class="has-arrow">
+      <a href="javascript:void(0)" class="has-arrow">
         <div class="parent-icon">
           <ion-icon name="briefcase-outline"></ion-icon>
         </div>
         <div class="menu-title">Ventas</div>
       </a>
-      <ul *ngIf="isSubMenuOpen('ventasSubmenu')">
+      <ul>
         <li><a (click)="navigateTo('admin/ventas/accesorios')">
             <ion-icon name="ellipse-outline"></ion-icon> Accesorios
           </a>
@@ -166,15 +156,15 @@
       </a>
     </li>
 
-    <li  *ngIf="!isSidebarCollapsed" class="menu-label">Personas y Motos</li>
+    <li class="menu-label">Personas y Motos</li>
     <li>
-      <a (click)="toggleSubMenu('personasSubmenu')" class="has-arrow">
+      <a href="javascript:void(0)" class="has-arrow">
         <div class="parent-icon">
           <ion-icon name="accessibility-outline"></ion-icon>
         </div>
         <div class="menu-title">Personas</div>
       </a>
-      <ul *ngIf="isSubMenuOpen('personasSubmenu')">
+      <ul>
         <li *ngIf="isAdmin"><a (click)="navigateTo('admin/personas')">
             <ion-icon name="ellipse-outline"></ion-icon> Listado de Personas
           </a>
@@ -199,13 +189,13 @@
     </li>
 
     <li>
-      <a (click)="toggleSubMenu('motosSubmenu')" class="has-arrow">
+      <a href="javascript:void(0)" class="has-arrow">
         <div class="parent-icon">
           <ion-icon name="bicycle-outline"></ion-icon>
         </div>
         <div class="menu-title">Motos</div>
       </a>
-      <ul *ngIf="isSubMenuOpen('motosSubmenu')">
+      <ul>
         <li><a (click)="navigateTo('admin/motos')">
             <ion-icon name="ellipse-outline"></ion-icon> Listado de Motos
           </a>
@@ -225,15 +215,15 @@
       </ul>
     </li>
 
-    <li  class="menu-label" *ngIf="isAdmin && !isSidebarCollapsed">Padrones</li>
+    <li class="menu-label" *ngIf="isAdmin">Padrones</li>
     <li *ngIf="isAdmin">
-      <a (click)="toggleSubMenu('padronesPersonasSubmenu')" class="has-arrow">
+      <a href="javascript:void(0)" class="has-arrow">
         <div class="parent-icon">
           <ion-icon name="happy-outline"></ion-icon>
         </div>
         <div class="menu-title">Para Personas</div>
       </a>
-      <ul *ngIf="isSubMenuOpen('padronesPersonasSubmenu')">
+      <ul>
         <li><a (click)="navigateTo('admin/tipo-personas')">
             <ion-icon name="ellipse-outline"></ion-icon> Tipo de Personas
           </a>
@@ -250,13 +240,13 @@
     </li>
 
     <li *ngIf="isAdmin">
-      <a (click)="toggleSubMenu('padronesMotosSubmenu')" class="has-arrow">
+      <a href="javascript:void(0)" class="has-arrow">
         <div class="parent-icon">
           <ion-icon name="hammer-outline"></ion-icon>
         </div>
         <div class="menu-title">Para Motos</div>
       </a>
-      <ul *ngIf="isSubMenuOpen('padronesMotosSubmenu')">
+      <ul>
         <li><a (click)="navigateTo('admin/marcas')">
             <ion-icon name="ellipse-outline"></ion-icon> Marcas
           </a>
@@ -272,6 +262,6 @@
       </ul>
     </li>
   </ul>
-  <!--end navigation-->
+  </nav>
 </aside>
 <!--end sidebar -->

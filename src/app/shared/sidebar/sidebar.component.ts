@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import MetisMenu from 'metismenujs';
@@ -9,72 +9,78 @@ import { SidebarService } from '../../services/sidebar.service';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent {
-  isSidebarCollapsed = false;
-  nombre: any
-  rol:any
+export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
+  nombre: any;
+  rol: any;
   isAdmin: any;
-  openSubMenus: { [key: string]: boolean } = {};
+  showDropdown = false;
+  isSidebarToggled = false;
+
+  private metisMenu?: MetisMenu;
+
   constructor(
     private router: Router,
     private authService: AuthService,
     private sidebarService: SidebarService
-  ){
-    this.sidebarService.sidebarCollapsed$.subscribe(
-      (collapsed) => (this.isSidebarCollapsed = collapsed)
-    );
-  }
+  ) {}
 
   navigateTo(path: string) {
     this.router.navigate([path]);
   }
 
-  ngAfterViewInit() {
-    const metisMenu = new MetisMenu('#menu'); 
-  }
-
   ngOnInit(): void {
     this.isAdmin = this.authService.isAllowed();
-   
-  
-    console.log('admin:',this.isAdmin);
-    
-  }
-  toggleSidebar() {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed
-  }
+    this.isSidebarToggled =
+      document.querySelector('.wrapper')?.classList.contains('toggled') ?? false;
 
-  toggleSubMenu(menu: string) {
-    this.toggleSidebar()
-    this.openSubMenus[menu] = !this.openSubMenus[menu];
+    this.authService.getUserData().subscribe((data) => {
+      if (!data) {
+        return;
+      }
+      this.nombre = data.nombre === 'Admin Admin' ? 'Admin' : data.nombre;
+      this.rol = data.rol;
+    });
   }
 
-  isSubMenuOpen(menu: string): boolean {
-    this.toggleSidebar()
-    return this.openSubMenus[menu] || false;
-
+  ngAfterViewInit(): void {
+    setTimeout(() => this.initMetisMenu(), 0);
   }
 
-  showDropdown: boolean = false;
+  ngOnDestroy(): void {
+    this.metisMenu?.dispose();
+  }
+
+  private initMetisMenu(): void {
+    const menu = document.querySelector('#menu');
+    if (!menu) {
+      return;
+    }
+    this.metisMenu?.dispose();
+    this.metisMenu = new MetisMenu('#menu', { toggle: true });
+  }
+
+  toggleSidebar(): void {
+    this.sidebarService.toggleSidebar();
+    const wrapper = document.querySelector('.wrapper');
+    wrapper?.classList.toggle('toggled');
+    this.isSidebarToggled = wrapper?.classList.contains('toggled') ?? false;
+  }
 
   toggleDropdown(event: MouseEvent): void {
-    event.preventDefault(); // Evita que el enlace recargue la página
+    event.preventDefault();
     this.showDropdown = !this.showDropdown;
   }
-
-
-  
 
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-user-setting')) {
-      this.showDropdown = false; // Cerrar el menú si se hace clic fuera
+    if (!target.closest('.user-menu')) {
+      this.showDropdown = false;
     }
   }
 
-
-  logout(){
+  logout() {
+    this.showDropdown = false;
     this.authService.logout();
     this.router.navigate(['/login']);
   }

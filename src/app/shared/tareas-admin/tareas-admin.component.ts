@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { color } from 'html2canvas/dist/types/css/types/color';
 import { TareasService } from '../../services/tareas.service';
 import { AuthService } from '../../services/auth.service';
@@ -10,7 +10,7 @@ import { MessageService } from 'primeng/api';
   templateUrl: './tareas-admin.component.html',
   styleUrl: './tareas-admin.component.css'
 })
-export class TareasAdminComponent implements OnInit, OnDestroy {
+export class TareasAdminComponent implements OnInit, OnChanges, OnDestroy {
 
 
 
@@ -33,13 +33,18 @@ export class TareasAdminComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.syncTotalRecords();
+  }
 
-      console.log(this.tareas);
-      
-      
-    
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['tareas']) {
+      this.syncTotalRecords();
+      this.currentPage = 0;
+    }
+  }
 
-      
+  private syncTotalRecords(): void {
+    this.totalRecords = this.tareas?.length ?? 0;
   }
 
   
@@ -59,7 +64,10 @@ export class TareasAdminComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(event: any) {
-    this.currentPage = event.page;
+    this.currentPage = event.page ?? 0;
+    if (event.rows) {
+      this.pageSize = event.rows;
+    }
   }
 
   modalOpen(rowData: any) {
