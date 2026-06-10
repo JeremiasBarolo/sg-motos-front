@@ -49,10 +49,9 @@ export class DatosServicioService {
       
   }
 
-  // update
-  update(id: number, Entity: FormData): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, Entity, { headers: this.getHeaders() })
-
+  // update (id = movimiento del servicio)
+  update(id: number, entity: Record<string, unknown>): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, entity, { headers: this.getHeaders() });
   }
 
   // update

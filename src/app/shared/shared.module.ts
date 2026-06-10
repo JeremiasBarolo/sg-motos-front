@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { FooterComponent } from './footer/footer.component';
-import { IonicModule } from '@ionic/angular';
 import { TablangComponent } from './tablang/tablang.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -34,7 +33,6 @@ import { VentaMotoPdfComponent } from './venta-moto-pdf/venta-moto-pdf.component
   ],
   imports: [
     CommonModule,
-    IonicModule,
     TableModule,
     ButtonModule,
     TooltipModule,
@@ -56,6 +54,7 @@ import { VentaMotoPdfComponent } from './venta-moto-pdf/venta-moto-pdf.component
     
     
 
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SharedModule { }

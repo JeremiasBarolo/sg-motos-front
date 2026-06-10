@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminComponent } from './admin.component';
 import { TipoArticuloComponent } from './tipo-articulo/tipo-articulo.component';
@@ -39,7 +39,6 @@ import { AsignarInsumosComponent } from './asignar-insumos/asignar-insumos.compo
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { InicioComponent } from './inicio/inicio.component';
-import { IonicModule } from '@ionic/angular';
 import { ServiciosComponent } from './servicios/servicios.component';
 import { InsumosComponent } from './insumos/insumos.component';
 import { TareasComponent } from './tareas/tareas.component';
@@ -107,13 +106,13 @@ import { OperacionesDetailsComponent } from './operaciones-details/operaciones-d
     FormsModule,
     TableModule,
     ToastModule,
-    IonicModule,
     CalendarModule,
     StepperModule
     
     
   
   ],
-  providers: [MessageService]
+  providers: [MessageService],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AdminModule { }

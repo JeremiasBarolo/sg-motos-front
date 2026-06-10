@@ -88,6 +88,10 @@ export class MovimientosService {
     return this.http.get<any[]>(`${this.apiUrl}/services`, { headers: this.getHeaders() }); 
   }
 
+  getPageServices(page = 0, size = 10): Observable<PaginatedResponse<any>> {
+    return getPaginated(this.http, `${this.apiUrl}/services`, page, size, this.getHeaders());
+  }
+
   // get by id
   getById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() })

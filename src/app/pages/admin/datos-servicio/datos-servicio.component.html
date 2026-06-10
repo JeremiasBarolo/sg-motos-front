@@ -1,6 +1,6 @@
 <div class="header-container">
     <h3>Service</h3>
-    <p-button icon="pi pi-plus" label="Agregar Service" [text]="true" (click)="crearVisible = true" styleClass="ml-auto"></p-button>
+    <p-button icon="pi pi-plus" label="Agregar Service" [text]="true" (click)="iniciarCreacion()" styleClass="ml-auto"></p-button>
 </div>
 
 <div class="filter-container">
@@ -11,8 +11,13 @@
 <app-tablang
     [data]="products"
     [columns]="columns"
+    [serverSide]="serverSide"
+    [totalRecords]="totalRecords"
+    [rows]="pageSize"
+    [loading]="loading"
     [insumosVisible]="true"
     [pdfVisible]="true"
+    (pageChange)="loadPage($event)"
     (editarClick)="editarItem($event)" 
     (eliminarClick)="eliminarItem($event)"
     (insumoClick)="asignarInsumos($event)" 
@@ -27,7 +32,8 @@
             <label for="personaId" class="font-semibold w-6rem"><strong>Cliente</strong></label>
             <br>
             <select id="personaId" class="flex-auto" formControlName="personaId">
-              <option *ngFor="let persona of clientes" [value]="persona.id">{{ persona.nombre }} {{ persona.apellido }}</option>
+              <option [ngValue]="null" disabled>Seleccione un cliente</option>
+              <option *ngFor="let persona of clientes" [ngValue]="persona.id">{{ persona.nombre }} {{ persona.apellido }}</option>
             </select>
         </div>
 
@@ -66,8 +72,9 @@
         <div class="flex align-items-center gap-3 mb-3">
             <label for="tipo_servicio" class="font-semibold w-6rem"><strong>Tipo de Servicio</strong></label>
             <br>
-            <select id="tipo_servicio" class="flex-auto"  formControlName="tipo_servicio">
-                <option *ngFor="let tipo of tipoServicio" [value]="tipo.id">{{ tipo.descripcion }}</option>
+            <select id="tipo_servicio" class="flex-auto" formControlName="tipo_servicio">
+                <option [ngValue]="null" disabled>Seleccione un tipo</option>
+                <option *ngFor="let tipo of tipoServicio" [ngValue]="tipo.id">{{ tipo.descripcion }}</option>
             </select>
         </div>
 
@@ -126,7 +133,8 @@
             <label for="personaId" class="font-semibold w-6rem"><strong>Cliente</strong></label>
             <br>
             <select id="personaId" class="flex-auto" formControlName="personaId">
-              <option *ngFor="let persona of clientes" [value]="persona.id">{{ persona.nombre }} {{ persona.apellido }}</option>
+              <option [ngValue]="null" disabled>Seleccione un cliente</option>
+              <option *ngFor="let persona of clientes" [ngValue]="persona.id">{{ persona.nombre }} {{ persona.apellido }}</option>
             </select>
         </div>
         
@@ -163,8 +171,9 @@
         <div class="flex align-items-center gap-3 mb-3">
             <label for="tipo_servicio" class="font-semibold w-6rem"><strong>Tipo de Servicio</strong></label>
             <br>
-            <select id="tipo_servicio" class="flex-auto"  formControlName="tipo_servicio">
-                <option *ngFor="let tipo of tipoServicio" [value]="tipo.id">{{ tipo.descripcion }}</option>
+            <select id="tipo_servicio" class="flex-auto" formControlName="tipo_servicio">
+                <option [ngValue]="null" disabled>Seleccione un tipo</option>
+                <option *ngFor="let tipo of tipoServicio" [ngValue]="tipo.id">{{ tipo.descripcion }}</option>
             </select>
         </div>
 
